@@ -28,36 +28,44 @@ const DARK_MAP_STYLES = [
 
 const createMarkerSvg = (court, isSelected) => {
   const status = getCourtStatus(court);
+  const isIndoor = court.indoor;
 
-  // Indoor: deep navy fill, blue stroke
-  // Outdoor: dark fill, status-color or orange stroke
-  const fillColor = court.indoor
-    ? '#0d1f3c'
+  // Outdoor: dark bg, status/orange stroke — unchanged
+  // Indoor: very dark navy bg, neon blue (#00D4FF) stroke + glow
+  const fillColor = isIndoor
+    ? '#0a1628'
     : court.needPlayers ? '#ff6b1a' : '#141414';
 
   const strokeColor = isSelected
     ? '#ffffff'
-    : court.indoor
-      ? '#3b82f6'
+    : isIndoor
+      ? '#00D4FF'
       : court.needPlayers ? '#ff8540' : status.color;
 
   const size = isSelected ? 42 : 36;
   const anchorH = isSelected ? 51 : 44;
-  const icon = court.indoor ? '🏛' : '🏀';
+
+  // Indoor: custom neon-blue basketball drawn with SVG paths
+  // Outdoor: keep the 🏀 emoji exactly as-is
+  const ballContent = isIndoor
+    ? `<circle cx="18" cy="18" r="9" fill="#00D4FF" opacity="0.93"/>
+       <path d="M18 9 C13.5 11 13.5 25 18 27" fill="none" stroke="#006E88" stroke-width="1.4" stroke-linecap="round"/>
+       <path d="M18 9 C22.5 11 22.5 25 18 27" fill="none" stroke="#006E88" stroke-width="1.4" stroke-linecap="round"/>
+       <line x1="9" y1="18" x2="27" y2="18" stroke="#006E88" stroke-width="1.4" stroke-linecap="round"/>
+       <circle cx="18" cy="18" r="9" fill="none" stroke="#009BB8" stroke-width="0.8"/>`
+    : `<text x="18" y="24" text-anchor="middle" font-size="15" font-family="Arial,sans-serif">🏀</text>`;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${anchorH}" viewBox="0 0 36 44">
     <defs>
-      <filter id="sh" x="-40%" y="-40%" width="180%" height="180%">
-        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="${strokeColor}" flood-opacity="0.45"/>
+      <filter id="sh" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="2" stdDeviation="${isIndoor ? '5' : '3'}" flood-color="${isIndoor ? '#00D4FF' : strokeColor}" flood-opacity="${isIndoor ? '0.75' : '0.45'}"/>
       </filter>
     </defs>
     <path d="M18 0C8.06 0 0 8.06 0 18C0 31.5 18 44 18 44C18 44 36 31.5 36 18C36 8.06 27.94 0 18 0Z"
       fill="${fillColor}" stroke="${strokeColor}" stroke-width="2" filter="url(#sh)"/>
-    <text x="18" y="24" text-anchor="middle" font-size="15" font-family="Arial,sans-serif">${icon}</text>
+    ${ballContent}
     ${court.needPlayers ? `<circle cx="29" cy="7" r="6" fill="#ff6b1a" stroke="#0d0d0d" stroke-width="1.5"/>
     <text x="29" y="11" text-anchor="middle" font-size="9" font-family="Arial,sans-serif" fill="white" font-weight="bold">!</text>` : ''}
-    ${court.indoor ? `<circle cx="29" cy="7" r="6" fill="#3b82f6" stroke="#0d0d0d" stroke-width="1.5"/>
-    <text x="29" y="11" text-anchor="middle" font-size="8" font-family="Arial,sans-serif" fill="white" font-weight="bold">IN</text>` : ''}
   </svg>`;
   return { svg, size, anchorH };
 };
@@ -326,6 +334,34 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
       <button onClick={handleLocate} style={styles.locateBtn} title="Go to my location">
         {locating ? '⏳' : '📍'}
       </button>
+
+      {/* Map Legend */}
+      <div style={styles.legend}>
+        <div style={styles.legendItem}>
+          <svg width="13" height="16" viewBox="0 0 36 44" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 0C8.06 0 0 8.06 0 18C0 31.5 18 44 18 44C18 44 36 31.5 36 18C36 8.06 27.94 0 18 0Z"
+              fill="#141414" stroke="#ff6b1a" strokeWidth="3"/>
+            <text x="18" y="26" textAnchor="middle" fontSize="17" fontFamily="Arial,sans-serif">🏀</text>
+          </svg>
+          <span style={styles.legendLabel}>Outdoor</span>
+        </div>
+        <div style={styles.legendItem}>
+          <svg width="13" height="16" viewBox="0 0 36 44" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="lg" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#00D4FF" floodOpacity="0.9"/>
+              </filter>
+            </defs>
+            <path d="M18 0C8.06 0 0 8.06 0 18C0 31.5 18 44 18 44C18 44 36 31.5 36 18C36 8.06 27.94 0 18 0Z"
+              fill="#0a1628" stroke="#00D4FF" strokeWidth="3" filter="url(#lg)"/>
+            <circle cx="18" cy="18" r="9" fill="#00D4FF" opacity="0.93"/>
+            <path d="M18 9 C13.5 11 13.5 25 18 27" fill="none" stroke="#006E88" strokeWidth="1.4" strokeLinecap="round"/>
+            <path d="M18 9 C22.5 11 22.5 25 18 27" fill="none" stroke="#006E88" strokeWidth="1.4" strokeLinecap="round"/>
+            <line x1="9" y1="18" x2="27" y2="18" stroke="#006E88" strokeWidth="1.4" strokeLinecap="round"/>
+          </svg>
+          <span style={{ ...styles.legendLabel, color: '#00D4FF' }}>Indoor</span>
+        </div>
+      </div>
     </div>
   );
 };
@@ -386,6 +422,31 @@ const styles = {
   toggleBtnActive: {
     background: 'rgba(255,107,26,0.15)',
     color: '#ff6b1a',
+  },
+  legend: {
+    position: 'absolute',
+    bottom: '12px',
+    left: '12px',
+    zIndex: 10,
+    background: 'rgba(10,10,10,0.88)',
+    border: '1px solid #2a2a2a',
+    borderRadius: '10px',
+    padding: '8px 12px',
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '7px',
+  },
+  legendItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  legendLabel: {
+    fontSize: '11px',
+    fontWeight: '600',
+    color: '#888',
+    whiteSpace: 'nowrap',
   },
   locateBtn: {
     position: 'absolute',
