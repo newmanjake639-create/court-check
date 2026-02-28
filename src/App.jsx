@@ -11,6 +11,8 @@ import { COURTS } from './data/courts';
 import { useIsMobile } from './hooks/useIsMobile';
 import { supabase } from './lib/supabase';
 import LegalModal from './components/LegalModal';
+import ChatPanel from './components/ChatPanel';
+import SportsTicker from './components/SportsTicker';
 import './App.css';
 
 const App = () => {
@@ -288,6 +290,13 @@ const App = () => {
         />
       )}
 
+      <ChatPanel
+        playerName={playerName}
+        checkedInCourt={checkedInCourtData}
+        courts={courts}
+        isMobile={isMobile}
+      />
+
       {legalPage && <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />}
 
       {profileOpen && (
@@ -301,6 +310,8 @@ const App = () => {
           isMobile={isMobile}
         />
       )}
+
+      <SportsTicker />
     </div>
   );
 };
