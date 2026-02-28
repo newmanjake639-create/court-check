@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import LegalModal from './LegalModal';
 
 const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onCheckOut, onClose, isMobile }) => {
   const [editing, setEditing] = useState(!playerName);
   const [draft, setDraft] = useState(playerName);
+  const [legalPage, setLegalPage] = useState(null);
 
   const save = () => {
     if (draft.trim()) {
@@ -27,6 +29,7 @@ const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onChe
 
   return (
     <div style={styles.overlay} onClick={onClose}>
+      {legalPage && <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />}
       <div style={{ ...styles.panel, width: isMobile ? '100%' : '320px' }} onClick={e => e.stopPropagation()}>
         <div style={styles.header}>
           <span style={styles.headerTitle}>Profile</span>
@@ -105,6 +108,13 @@ const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onChe
             </div>
           </div>
         </div>
+
+        {/* Legal links */}
+        <div style={styles.legalSection}>
+          <button onClick={() => setLegalPage('tos')} style={styles.legalLink}>Terms of Service</button>
+          <span style={styles.legalDot}>·</span>
+          <button onClick={() => setLegalPage('privacy')} style={styles.legalLink}>Privacy Policy</button>
+        </div>
       </div>
     </div>
   );
@@ -141,6 +151,9 @@ const styles = {
   statItem: { background: '#1a1a1a', border: '1px solid #1f1f1f', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' },
   statVal: { fontSize: '20px', fontWeight: '800', color: '#ff6b1a', marginBottom: '4px' },
   statLbl: { fontSize: '10px', color: '#555', lineHeight: 1.3 },
+  legalSection: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '16px 20px 24px', marginTop: 'auto' },
+  legalLink: { background: 'transparent', border: 'none', color: '#333', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit', padding: 0 },
+  legalDot: { color: '#2a2a2a', fontSize: '12px' },
 };
 
 export default Profile;

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getCourtStatus } from '../data/courts';
+import LegalModal from './LegalModal';
 
 const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playerName: savedName, setPlayerName: persistName }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,6 +11,8 @@ const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playe
   const effectiveCheckInTime = checkInTime || localCheckInTime;
   const [duration, setDuration] = useState('2');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [tosChecked, setTosChecked] = useState(false);
+  const [legalPage, setLegalPage] = useState(null);
 
   const checkedInCourtData = courts.find(c => c.id === checkedInCourt);
 
@@ -21,6 +24,7 @@ const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playe
   const handleCheckInClick = (court) => {
     setPendingCourt(court);
     setShowNameInput(true);
+    setTosChecked(false);
   };
 
   const handleConfirmCheckIn = () => {
@@ -89,6 +93,9 @@ const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playe
         </div>
       )}
 
+      {/* Legal Modal */}
+      {legalPage && <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />}
+
       {/* Name Input Modal */}
       {showNameInput && (
         <div style={styles.modalOverlay} onClick={() => setShowNameInput(false)}>
@@ -128,6 +135,22 @@ const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playe
               </div>
             </div>
 
+            {/* ToS checkbox */}
+            <button style={styles.tosRow} onClick={() => setTosChecked(c => !c)}>
+              <div style={{ ...styles.tosCheckbox, ...(tosChecked ? styles.tosCheckboxOn : {}) }}>
+                {tosChecked && <span style={styles.tosCheckmark}>✓</span>}
+              </div>
+              <span style={styles.tosText}>
+                I agree to the{' '}
+                <span
+                  style={styles.tosLink}
+                  onClick={e => { e.stopPropagation(); setLegalPage('tos'); }}
+                >
+                  Terms of Service
+                </span>
+              </span>
+            </button>
+
             <div style={styles.modalActions}>
               <button
                 onClick={() => setShowNameInput(false)}
@@ -137,10 +160,10 @@ const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playe
               </button>
               <button
                 onClick={handleConfirmCheckIn}
-                disabled={!playerName.trim()}
+                disabled={!playerName.trim() || !tosChecked}
                 style={{
                   ...styles.confirmBtn,
-                  ...(playerName.trim() ? {} : styles.confirmBtnDisabled),
+                  ...(playerName.trim() && tosChecked ? {} : styles.confirmBtnDisabled),
                 }}
               >
                 Check In ✓
@@ -427,11 +450,59 @@ const styles = {
     color: '#ff6b1a',
     borderColor: 'rgba(255, 107, 26, 0.4)',
   },
+  tosRow: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    background: '#141414',
+    border: '1px solid #2a2a2a',
+    borderRadius: '10px',
+    padding: '11px 13px',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    textAlign: 'left',
+    marginBottom: '4px',
+  },
+  tosCheckbox: {
+    width: '17px',
+    height: '17px',
+    borderRadius: '4px',
+    border: '1.5px solid #333',
+    background: 'transparent',
+    flexShrink: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.15s',
+  },
+  tosCheckboxOn: {
+    background: '#ff6b1a',
+    borderColor: '#ff6b1a',
+  },
+  tosCheckmark: {
+    fontSize: '10px',
+    color: '#fff',
+    fontWeight: '900',
+    lineHeight: 1,
+  },
+  tosText: {
+    fontSize: '12px',
+    color: '#777',
+    lineHeight: 1.4,
+  },
+  tosLink: {
+    color: '#ff6b1a',
+    fontWeight: '600',
+    textDecoration: 'underline',
+    textDecorationStyle: 'dotted',
+    cursor: 'pointer',
+  },
   modalActions: {
     display: 'grid',
     gridTemplateColumns: '1fr 2fr',
     gap: '10px',
-    marginTop: '24px',
+    marginTop: '4px',
   },
   cancelBtn: {
     padding: '12px',

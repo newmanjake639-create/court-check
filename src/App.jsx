@@ -10,6 +10,7 @@ import Welcome from './components/Welcome';
 import { COURTS } from './data/courts';
 import { useIsMobile } from './hooks/useIsMobile';
 import { supabase } from './lib/supabase';
+import LegalModal from './components/LegalModal';
 import './App.css';
 
 const App = () => {
@@ -19,7 +20,9 @@ const App = () => {
   const [profileOpen, setProfileOpen] = useState(false);
 
   const [playerName, setPlayerName] = useState(() => localStorage.getItem('cc_playerName') ?? null);
-  const showWelcome = playerName === null;
+  const [tosAgreed, setTosAgreed] = useState(() => localStorage.getItem('cc_tosAgreed') === 'true');
+  const [legalPage, setLegalPage] = useState(null);
+  const showWelcome = !tosAgreed;
 
   const [checkedInCourt, setCheckedInCourt] = useState(() => {
     const s = localStorage.getItem('cc_checkedIn');
@@ -128,6 +131,8 @@ const App = () => {
   };
 
   const handleWelcomeComplete = (name) => {
+    setTosAgreed(true);
+    localStorage.setItem('cc_tosAgreed', 'true');
     setPlayerName(name || '');
     localStorage.setItem('cc_playerName', name || '');
   };
@@ -140,7 +145,7 @@ const App = () => {
   };
 
   if (showWelcome) {
-    return <Welcome onComplete={handleWelcomeComplete} />;
+    return <Welcome onComplete={handleWelcomeComplete} initialName={playerName || ''} />;
   }
 
   const detailCourt = selectedCourt
@@ -264,6 +269,10 @@ const App = () => {
             </div>
           )}
           <div style={styles.statusRight}>
+            <button onClick={() => setLegalPage('privacy')} style={styles.legalLink}>Privacy</button>
+            <span style={styles.legalSep}>·</span>
+            <button onClick={() => setLegalPage('tos')} style={styles.legalLink}>Terms</button>
+            <div style={styles.legalDivider} />
             <span style={styles.statusText}>{courts.reduce((s, c) => s + c.checkedIn, 0)} players out</span>
           </div>
         </div>
@@ -278,6 +287,8 @@ const App = () => {
           setCheckedInCourt={handleSetCheckedInCourt}
         />
       )}
+
+      {legalPage && <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />}
 
       {profileOpen && (
         <Profile
@@ -577,7 +588,10 @@ const styles = {
   statusCheckedIn: { display: 'flex', alignItems: 'center', gap: '5px', background: 'rgba(255,107,26,0.1)', border: '1px solid rgba(255,107,26,0.2)', borderRadius: '20px', padding: '2px 6px 2px 10px', maxWidth: '200px', overflow: 'hidden' },
   statusCheckedInText: { fontSize: '11px', color: '#ff6b1a', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   statusCheckoutBtn: { background: 'transparent', border: 'none', color: '#ff6b1a', cursor: 'pointer', fontSize: '11px', padding: '0 2px', fontFamily: 'inherit', opacity: 0.7, flexShrink: 0 },
-  statusRight: { display: 'flex', alignItems: 'center', flexShrink: 0 },
+  statusRight: { display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 },
+  legalLink: { background: 'transparent', border: 'none', color: '#333', fontSize: '10px', cursor: 'pointer', fontFamily: 'inherit', padding: 0, lineHeight: 1 },
+  legalSep: { color: '#2a2a2a', fontSize: '10px', lineHeight: 1 },
+  legalDivider: { width: '1px', height: '10px', background: '#222', margin: '0 2px' },
 };
 
 export default App;
