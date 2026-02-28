@@ -448,6 +448,19 @@ const CourtDetailPanel = ({ court, onClose, checkedInCourt, setCheckedInCourt })
         <div style={{ minWidth: 0 }}>
           <h2 style={panelStyles.name}>{court.name}</h2>
           <p style={panelStyles.address}>{court.address}</p>
+          <span style={{
+            display: 'inline-block',
+            marginTop: '4px',
+            fontSize: '10px',
+            fontWeight: '700',
+            padding: '2px 8px',
+            borderRadius: '20px',
+            border: `1px solid ${court.indoor ? 'rgba(59,130,246,0.3)' : 'rgba(34,197,94,0.25)'}`,
+            background: court.indoor ? 'rgba(59,130,246,0.1)' : 'rgba(34,197,94,0.08)',
+            color: court.indoor ? '#60a5fa' : '#22c55e',
+          }}>
+            {court.indoor ? '🏛️ Indoor' : '🌳 Outdoor'}
+          </span>
         </div>
         <button onClick={onClose} style={panelStyles.closeBtn}>✕</button>
       </div>
@@ -507,6 +520,29 @@ const CourtDetailPanel = ({ court, onClose, checkedInCourt, setCheckedInCourt })
           </div>
         </div>
       </div>
+
+      {(court.hours || court.fee) && (
+        <div style={panelStyles.detailGrid}>
+          {court.hours && (
+            <div style={{ ...panelStyles.detailItem, gridColumn: '1 / -1' }}>
+              <span style={panelStyles.detailIcon}>🕐</span>
+              <div>
+                <div style={panelStyles.detailVal}>{court.hours}</div>
+                <div style={panelStyles.detailLbl}>Hours</div>
+              </div>
+            </div>
+          )}
+          {court.fee && (
+            <div style={{ ...panelStyles.detailItem, gridColumn: '1 / -1' }}>
+              <span style={panelStyles.detailIcon}>💳</span>
+              <div>
+                <div style={panelStyles.detailVal}>{court.fee}</div>
+                <div style={panelStyles.detailLbl}>Fee / Membership</div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div style={panelStyles.tags}>
         {court.tags.map(tag => <span key={tag} style={panelStyles.tag}>{tag}</span>)}

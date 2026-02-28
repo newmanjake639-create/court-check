@@ -28,10 +28,22 @@ const DARK_MAP_STYLES = [
 
 const createMarkerSvg = (court, isSelected) => {
   const status = getCourtStatus(court);
-  const fillColor = court.needPlayers ? '#ff6b1a' : '#141414';
-  const strokeColor = isSelected ? '#ffffff' : court.needPlayers ? '#ff8540' : status.color;
+
+  // Indoor: deep navy fill, blue stroke
+  // Outdoor: dark fill, status-color or orange stroke
+  const fillColor = court.indoor
+    ? '#0d1f3c'
+    : court.needPlayers ? '#ff6b1a' : '#141414';
+
+  const strokeColor = isSelected
+    ? '#ffffff'
+    : court.indoor
+      ? '#3b82f6'
+      : court.needPlayers ? '#ff8540' : status.color;
+
   const size = isSelected ? 42 : 36;
   const anchorH = isSelected ? 51 : 44;
+  const icon = court.indoor ? '🏛' : '🏀';
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${anchorH}" viewBox="0 0 36 44">
     <defs>
@@ -41,9 +53,11 @@ const createMarkerSvg = (court, isSelected) => {
     </defs>
     <path d="M18 0C8.06 0 0 8.06 0 18C0 31.5 18 44 18 44C18 44 36 31.5 36 18C36 8.06 27.94 0 18 0Z"
       fill="${fillColor}" stroke="${strokeColor}" stroke-width="2" filter="url(#sh)"/>
-    <text x="18" y="24" text-anchor="middle" font-size="15" font-family="Arial,sans-serif">🏀</text>
+    <text x="18" y="24" text-anchor="middle" font-size="15" font-family="Arial,sans-serif">${icon}</text>
     ${court.needPlayers ? `<circle cx="29" cy="7" r="6" fill="#ff6b1a" stroke="#0d0d0d" stroke-width="1.5"/>
     <text x="29" y="11" text-anchor="middle" font-size="9" font-family="Arial,sans-serif" fill="white" font-weight="bold">!</text>` : ''}
+    ${court.indoor ? `<circle cx="29" cy="7" r="6" fill="#3b82f6" stroke="#0d0d0d" stroke-width="1.5"/>
+    <text x="29" y="11" text-anchor="middle" font-size="8" font-family="Arial,sans-serif" fill="white" font-weight="bold">IN</text>` : ''}
   </svg>`;
   return { svg, size, anchorH };
 };
@@ -140,7 +154,13 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
 
   const onMapLoad = useCallback(map => {
     mapRef.current = map;
-  }, []);
+    // Fit all courts into view on initial load
+    if (window.google && courts.length > 0) {
+      const bounds = new window.google.maps.LatLngBounds();
+      courts.forEach(c => bounds.extend({ lat: c.lat, lng: c.lng }));
+      map.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+    }
+  }, [courts]);
 
   // Pan to court when selected from list or other views
   useEffect(() => {

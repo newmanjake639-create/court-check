@@ -1,10 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getCourtStatus } from '../data/courts';
 
-const CourtCard = ({ court, isSelected, onSelect, checkedInCourt }) => {
+const haversineMi = (lat1, lng1, lat2, lng2) => {
+  const R = 3959;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
+const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc }) => {
   const status = getCourtStatus(court);
   const isCheckedIn = checkedInCourt === court.id;
   const fillPercent = Math.round((court.checkedIn / court.maxPlayers) * 100);
+  const distance = userLoc
+    ? haversineMi(userLoc.lat, userLoc.lng, court.lat, court.lng)
+    : null;
 
   return (
     <div
@@ -26,6 +38,20 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt }) => {
         <div style={styles.cardTitleGroup}>
           <h3 style={styles.cardName}>{court.name}</h3>
           <p style={styles.cardAddress}>{court.address}</p>
+          <div style={styles.cardMeta2}>
+            <span style={{
+              ...styles.typeBadge,
+              background: court.indoor ? 'rgba(59,130,246,0.1)' : 'rgba(34,197,94,0.08)',
+              color: court.indoor ? '#60a5fa' : '#22c55e',
+              borderColor: court.indoor ? 'rgba(59,130,246,0.3)' : 'rgba(34,197,94,0.25)',
+            }}>
+              {court.indoor ? '🏛️ Indoor' : '🌳 Outdoor'}
+            </span>
+            {court.city && <span style={styles.cityLabel}>{court.city}</span>}
+            {distance !== null && (
+              <span style={styles.distLabel}>{distance < 0.1 ? '<0.1' : distance.toFixed(1)} mi</span>
+            )}
+          </div>
         </div>
         <div style={{ textAlign: 'right', flexShrink: 0 }}>
           <span style={{
@@ -91,10 +117,22 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt }) => {
 
 const CourtList = ({ courts, onCourtSelect, selectedCourt, checkedInCourt }) => {
   const [filter, setFilter] = useState('all');
-  const [sort, setSort] = useState('active');
+  const [sort, setSort] = useState('nearest');
+  const [userLoc, setUserLoc] = useState(null);
+
+  useEffect(() => {
+    if (!navigator.geolocation) { setSort('active'); return; }
+    navigator.geolocation.getCurrentPosition(
+      pos => setUserLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => setSort(s => s === 'nearest' ? 'active' : s),
+      { timeout: 6000, maximumAge: 300000 }
+    );
+  }, []);
 
   const filters = [
     { id: 'all', label: 'All Courts' },
+    { id: 'outdoor', label: '🌳 Outdoor' },
+    { id: 'indoor', label: '🏛️ Indoor' },
     { id: 'needPlayers', label: '📣 Need Players' },
     { id: 'active', label: 'Active' },
     { id: 'lights', label: '💡 Lights' },
@@ -104,10 +142,17 @@ const CourtList = ({ courts, onCourtSelect, selectedCourt, checkedInCourt }) => 
     if (filter === 'needPlayers') return c.needPlayers;
     if (filter === 'active') return c.checkedIn > 0;
     if (filter === 'lights') return c.lights;
+    if (filter === 'outdoor') return !c.indoor;
+    if (filter === 'indoor') return c.indoor;
     return true;
   });
 
   const sorted = [...filtered].sort((a, b) => {
+    if (sort === 'nearest') {
+      if (!userLoc) return b.checkedIn - a.checkedIn;
+      return haversineMi(userLoc.lat, userLoc.lng, a.lat, a.lng) -
+             haversineMi(userLoc.lat, userLoc.lng, b.lat, b.lng);
+    }
     if (sort === 'active') return b.checkedIn - a.checkedIn;
     if (sort === 'rating') return b.rating - a.rating;
     if (sort === 'name') return a.name.localeCompare(b.name);
@@ -138,6 +183,7 @@ const CourtList = ({ courts, onCourtSelect, selectedCourt, checkedInCourt }) => 
             onChange={e => setSort(e.target.value)}
             style={styles.sortSelect}
           >
+            <option value="nearest">📍 Nearest</option>
             <option value="active">Most Active</option>
             <option value="rating">Top Rated</option>
             <option value="name">Name</option>
@@ -159,6 +205,7 @@ const CourtList = ({ courts, onCourtSelect, selectedCourt, checkedInCourt }) => 
               isSelected={selectedCourt?.id === court.id}
               onSelect={onCourtSelect}
               checkedInCourt={checkedInCourt}
+              userLoc={userLoc}
             />
           ))
         )}
@@ -355,6 +402,32 @@ const styles = {
   metaText: {
     fontSize: '12px',
     color: '#777',
+  },
+  cardMeta2: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    marginTop: '5px',
+    flexWrap: 'wrap',
+  },
+  typeBadge: {
+    fontSize: '10px',
+    fontWeight: '600',
+    padding: '2px 7px',
+    borderRadius: '20px',
+    border: '1px solid',
+    whiteSpace: 'nowrap',
+  },
+  cityLabel: {
+    fontSize: '10px',
+    color: '#444',
+    whiteSpace: 'nowrap',
+  },
+  distLabel: {
+    fontSize: '10px',
+    color: '#555',
+    whiteSpace: 'nowrap',
+    marginLeft: 'auto',
   },
   needAlert: {
     display: 'flex',
