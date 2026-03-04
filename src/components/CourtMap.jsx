@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import { getCourtStatus } from '../data/courts';
 
-const MAP_CENTER = { lat: 40.7380, lng: -74.0320 };
+const MAP_CENTER = { lat: 40.7450, lng: -74.0290 };
 
 const DARK_MAP_STYLES = [
   { elementType: 'geometry', stylers: [{ color: '#0d0d0d' }] },
