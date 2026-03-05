@@ -227,6 +227,14 @@ const ChatPanel = ({ playerName, checkedInCourt, courts, isMobile }) => {
       {isOpen && (
         <div style={{ ...S.panel, top: panelTop, bottom: panelBot, width: panelWidth }}>
 
+          {/* Close bar */}
+          <button style={S.closeBar} onClick={close}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+            <span style={S.closeBarText}>Close Chat</span>
+          </button>
+
           {/* Header */}
           <div style={S.header}>
             <div style={S.headerLeft}>
@@ -247,7 +255,6 @@ const ChatPanel = ({ playerName, checkedInCourt, courts, isMobile }) => {
                 🏀 Court
               </button>
             </div>
-            <button onClick={close} style={S.closeBtn}>✕</button>
           </div>
 
           {/* Court mode: court picker (if not checked in) */}
@@ -432,15 +439,27 @@ const S = {
     background: '#ff6b1a',
     color: '#fff',
   },
-  closeBtn: {
-    background: 'transparent',
+  closeBar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: '5px',
+    padding: '10px 14px',
+    background: '#fff8f5',
+    borderBottom: '1px solid #ffe8d6',
+    flexShrink: 0,
     border: 'none',
-    color: '#bbb',
-    fontSize: '14px',
+    borderBottom: '1px solid #ffe8d6',
+    width: '100%',
     cursor: 'pointer',
     fontFamily: 'inherit',
-    padding: '2px 4px',
-    flexShrink: 0,
+    color: '#ff6b1a',
+    boxSizing: 'border-box',
+  },
+  closeBarText: {
+    fontSize: '13px',
+    fontWeight: '700',
+    color: '#ff6b1a',
   },
   courtBar: {
     display: 'flex',
