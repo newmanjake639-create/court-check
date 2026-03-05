@@ -62,16 +62,13 @@ const TickerItem = ({ item }) => {
 
   return (
     <div style={s.item}>
-      {/* League chip */}
       <span style={{ ...s.league, ...(item.league === 'NBA' ? s.lNba : s.lCbb) }}>
         {item.league}
       </span>
 
-      {/* Away */}
       <TeamLogo src={item.awayLogo} abbr={item.awayAbbr} />
       <span style={{ ...s.abbr, ...(isFinal ? s.abbrFinal : {}) }}>{item.awayAbbr}</span>
 
-      {/* Score or vs */}
       {!isPre ? (
         <span style={s.scores}>
           <span style={{ ...s.num, ...(isLive ? s.numLive : isFinal ? s.numFinal : {}) }}>
@@ -86,11 +83,9 @@ const TickerItem = ({ item }) => {
         <span style={s.vs}>vs</span>
       )}
 
-      {/* Home */}
       <span style={{ ...s.abbr, ...(isFinal ? s.abbrFinal : {}) }}>{item.homeAbbr}</span>
       <TeamLogo src={item.homeLogo} abbr={item.homeAbbr} />
 
-      {/* Status badge */}
       <span style={{ ...s.badge, ...(isLive ? s.badgeLive : isFinal ? s.badgeFinal : s.badgePre) }}>
         {isLive && <span style={s.liveDot} />}
         {item.statusLabel}
@@ -103,7 +98,7 @@ const TickerItem = ({ item }) => {
 
 const SportsTicker = () => {
   const [items, setItems] = useState([]);
-  const [status, setStatus] = useState('loading'); // 'loading' | 'ready' | 'empty'
+  const [status, setStatus] = useState('loading');
 
   const fetchScores = async () => {
     try {
@@ -118,7 +113,6 @@ const SportsTicker = () => {
       const nba = parseEvents(nbaEvents, 'NBA');
       const cbb = parseEvents(cbbEvents.slice(0, 10), 'NCAAB');
 
-      // Sort: live first, then final, then upcoming
       const all = [
         ...nba.filter(x => x.type === 'live'),
         ...cbb.filter(x => x.type === 'live'),
@@ -141,18 +135,15 @@ const SportsTicker = () => {
     return () => clearInterval(id);
   }, []);
 
-  // Always render the bar to avoid layout shift
   const duration = Math.max(20, items.length * 5);
 
   return (
     <div style={s.bar}>
-      {/* Left label */}
       <div style={s.label}>
         <span style={s.ball}>🏀</span>
         <span style={s.labelText}>SCORES</span>
       </div>
 
-      {/* Content */}
       <div style={s.overflow}>
         {status === 'loading' && (
           <span style={s.placeholder}>Loading scores...</span>
@@ -176,8 +167,8 @@ const s = {
   bar: {
     flexShrink: 0,
     height: '28px',
-    background: '#080808',
-    borderTop: '1px solid #1a1a1a',
+    background: '#f0f0f0',
+    borderTop: '1px solid #e5e5e5',
     display: 'flex',
     alignItems: 'center',
     overflow: 'hidden',
@@ -191,12 +182,12 @@ const s = {
     padding: '0 10px',
     height: '100%',
     background: '#ff6b1a',
-    borderRight: '2px solid rgba(255,107,26,0.6)',
+    borderRight: '2px solid rgba(255,107,26,0.5)',
   },
   ball: { fontSize: '11px', lineHeight: 1 },
   labelText: { fontSize: '9px', fontWeight: '900', color: '#fff', letterSpacing: '0.1em' },
   overflow: { flex: 1, overflow: 'hidden', height: '100%', display: 'flex', alignItems: 'center' },
-  placeholder: { fontSize: '10px', color: '#444', paddingLeft: '12px', fontStyle: 'italic' },
+  placeholder: { fontSize: '10px', color: '#bbb', paddingLeft: '12px', fontStyle: 'italic' },
   track: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -220,23 +211,23 @@ const s = {
     flexShrink: 0,
   },
   lNba: {
-    background: 'rgba(255,107,26,0.15)',
-    color: '#ff8c4a',
+    background: 'rgba(255,107,26,0.12)',
+    color: '#e55a00',
     border: '1px solid rgba(255,107,26,0.25)',
   },
   lCbb: {
-    background: 'rgba(59,130,246,0.12)',
-    color: '#60a5fa',
-    border: '1px solid rgba(59,130,246,0.25)',
+    background: 'rgba(59,130,246,0.10)',
+    color: '#2563eb',
+    border: '1px solid rgba(59,130,246,0.2)',
   },
-  abbr: { fontSize: '11px', fontWeight: '700', color: '#d0d0d0', letterSpacing: '0.02em' },
-  abbrFinal: { color: '#666' },
+  abbr: { fontSize: '11px', fontWeight: '700', color: '#333', letterSpacing: '0.02em' },
+  abbrFinal: { color: '#bbb' },
   scores: { display: 'inline-flex', alignItems: 'center', gap: '3px' },
-  num: { fontSize: '12px', fontWeight: '800', color: '#f0f0f0', fontVariantNumeric: 'tabular-nums' },
+  num: { fontSize: '12px', fontWeight: '800', color: '#1a1a1a', fontVariantNumeric: 'tabular-nums' },
   numLive: { color: '#ff6b1a' },
-  numFinal: { color: '#888' },
-  dash: { fontSize: '10px', color: '#333' },
-  vs: { fontSize: '10px', color: '#444', fontWeight: '600', padding: '0 2px' },
+  numFinal: { color: '#bbb' },
+  dash: { fontSize: '10px', color: '#ccc' },
+  vs: { fontSize: '10px', color: '#999', fontWeight: '600', padding: '0 2px' },
   badge: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -249,19 +240,19 @@ const s = {
     flexShrink: 0,
   },
   badgeLive: {
-    background: 'rgba(239,68,68,0.12)',
+    background: 'rgba(239,68,68,0.10)',
     color: '#ef4444',
-    border: '1px solid rgba(239,68,68,0.25)',
+    border: '1px solid rgba(239,68,68,0.2)',
   },
   badgeFinal: {
     background: 'transparent',
-    color: '#444',
-    border: '1px solid #1f1f1f',
+    color: '#bbb',
+    border: '1px solid #e5e5e5',
   },
   badgePre: {
     background: 'transparent',
-    color: '#555',
-    border: '1px solid #1f1f1f',
+    color: '#999',
+    border: '1px solid #e5e5e5',
   },
   liveDot: {
     width: '5px',
@@ -271,7 +262,7 @@ const s = {
     animation: 'pulse-dot 1.2s ease-in-out infinite',
     flexShrink: 0,
   },
-  sep: { fontSize: '14px', color: '#1f1f1f', margin: '0 2px', flexShrink: 0 },
+  sep: { fontSize: '14px', color: '#ddd', margin: '0 2px', flexShrink: 0 },
 };
 
 export default SportsTicker;

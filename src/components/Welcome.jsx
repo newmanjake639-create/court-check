@@ -16,7 +16,6 @@ const Welcome = ({ onComplete, initialName = '' }) => {
       {legalPage && <LegalModal page={legalPage} onClose={() => setLegalPage(null)} />}
 
       <div style={styles.card}>
-        {/* Logo */}
         <div style={styles.logoWrap}>
           <div style={styles.logoIcon}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -39,7 +38,6 @@ const Welcome = ({ onComplete, initialName = '' }) => {
 
         <div style={styles.divider} />
 
-        {/* Name input */}
         <div style={styles.field}>
           <label style={styles.fieldLabel}>What do they call you? <span style={styles.optional}>(optional)</span></label>
           <input
@@ -54,7 +52,6 @@ const Welcome = ({ onComplete, initialName = '' }) => {
           />
         </div>
 
-        {/* ToS agreement */}
         <button style={styles.checkboxRow} onClick={() => setAgreed(a => !a)}>
           <div style={{ ...styles.checkbox, ...(agreed ? styles.checkboxOn : {}) }}>
             {agreed && <span style={styles.checkmark}>✓</span>}
@@ -77,7 +74,6 @@ const Welcome = ({ onComplete, initialName = '' }) => {
           </span>
         </button>
 
-        {/* CTA */}
         <button
           onClick={handleSubmit}
           disabled={!agreed}
@@ -94,7 +90,7 @@ const styles = {
   overlay: {
     position: 'fixed',
     inset: 0,
-    background: '#0d0d0d',
+    background: '#f5f5f5',
     zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
@@ -117,8 +113,8 @@ const styles = {
     width: '56px',
     height: '56px',
     borderRadius: '16px',
-    background: 'rgba(255,107,26,0.12)',
-    border: '1px solid rgba(255,107,26,0.3)',
+    background: 'rgba(255,107,26,0.10)',
+    border: '1px solid rgba(255,107,26,0.25)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -126,7 +122,7 @@ const styles = {
   appName: {
     fontSize: '34px',
     fontWeight: '900',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     letterSpacing: '-0.5px',
     margin: 0,
     lineHeight: 1,
@@ -140,7 +136,7 @@ const styles = {
   },
   welcome: {
     fontSize: '14px',
-    color: '#555',
+    color: '#888',
     lineHeight: 1.65,
     margin: 0,
     maxWidth: '300px',
@@ -148,7 +144,7 @@ const styles = {
   divider: {
     width: '100%',
     height: '1px',
-    background: '#1a1a1a',
+    background: '#e5e5e5',
     margin: '2px 0',
   },
   field: {
@@ -159,7 +155,7 @@ const styles = {
     display: 'block',
     fontSize: '11px',
     fontWeight: '700',
-    color: '#555',
+    color: '#999',
     textTransform: 'uppercase',
     letterSpacing: '0.08em',
     marginBottom: '8px',
@@ -167,41 +163,43 @@ const styles = {
   optional: {
     fontWeight: '400',
     textTransform: 'none',
-    color: '#444',
+    color: '#bbb',
     letterSpacing: 0,
   },
   input: {
     width: '100%',
-    background: '#141414',
-    border: '1px solid #2a2a2a',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '12px',
     padding: '13px 16px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '15px',
     fontFamily: 'inherit',
     outline: 'none',
     boxSizing: 'border-box',
     transition: 'border-color 0.2s',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
   },
   checkboxRow: {
     width: '100%',
     display: 'flex',
     alignItems: 'flex-start',
     gap: '10px',
-    background: '#141414',
-    border: '1px solid #2a2a2a',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '12px',
     padding: '12px 14px',
     cursor: 'pointer',
     fontFamily: 'inherit',
     textAlign: 'left',
     transition: 'border-color 0.2s',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
   },
   checkbox: {
     width: '18px',
     height: '18px',
     borderRadius: '5px',
-    border: '1.5px solid #333',
+    border: '1.5px solid #ddd',
     background: 'transparent',
     flexShrink: 0,
     display: 'flex',
@@ -247,7 +245,7 @@ const styles = {
     letterSpacing: '0.01em',
   },
   btnDisabled: {
-    opacity: 0.3,
+    opacity: 0.35,
     cursor: 'not-allowed',
   },
 };

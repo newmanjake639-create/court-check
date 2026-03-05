@@ -61,21 +61,21 @@ const Header = ({ activeTab, setActiveTab, playerName, onProfileClick, checkedIn
 };
 
 const styles = {
-  header: { backgroundColor: '#0d0d0d', borderBottom: '1px solid #1f1f1f', flexShrink: 0, position: 'relative', zIndex: 100 },
+  header: { backgroundColor: '#ffffff', borderBottom: '1px solid #e5e5e5', flexShrink: 0, position: 'relative', zIndex: 100, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
   inner: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' },
   brand: { display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 },
-  logo: { width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,107,26,0.12)', border: '1px solid rgba(255,107,26,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  title: { fontWeight: '800', color: '#f0f0f0', letterSpacing: '-0.3px', lineHeight: 1.2 },
+  logo: { width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,107,26,0.10)', border: '1px solid rgba(255,107,26,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  title: { fontWeight: '800', color: '#1a1a1a', letterSpacing: '-0.3px', lineHeight: 1.2 },
   subtitle: { fontSize: '10px', color: '#ff6b1a', fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase' },
   nav: { display: 'flex', gap: '2px', flex: 1, justifyContent: 'center' },
-  navBtn: { display: 'flex', alignItems: 'center', gap: '5px', padding: '7px 12px', borderRadius: '8px', border: '1px solid transparent', background: 'transparent', color: '#666', fontSize: '12px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit', whiteSpace: 'nowrap' },
-  navBtnActive: { background: 'rgba(255,107,26,0.12)', color: '#ff6b1a', borderColor: 'rgba(255,107,26,0.25)' },
+  navBtn: { display: 'flex', alignItems: 'center', gap: '5px', padding: '7px 12px', borderRadius: '8px', border: '1px solid transparent', background: 'transparent', color: '#999', fontSize: '12px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.15s', fontFamily: 'inherit', whiteSpace: 'nowrap' },
+  navBtnActive: { background: 'rgba(255,107,26,0.10)', color: '#ff6b1a', borderColor: 'rgba(255,107,26,0.2)' },
   tabIcon: { fontSize: '13px' },
   rightControls: { display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 },
-  mobileActiveLabel: { fontSize: '13px', fontWeight: '700', color: '#888' },
-  avatar: { position: 'relative', width: '34px', height: '34px', borderRadius: '10px', background: 'rgba(255,107,26,0.12)', border: '1px solid rgba(255,107,26,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontFamily: 'inherit' },
+  mobileActiveLabel: { fontSize: '13px', fontWeight: '700', color: '#999' },
+  avatar: { position: 'relative', width: '34px', height: '34px', borderRadius: '10px', background: 'rgba(255,107,26,0.10)', border: '1px solid rgba(255,107,26,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontFamily: 'inherit' },
   avatarText: { fontSize: '12px', fontWeight: '800', color: '#ff6b1a' },
-  avatarDot: { position: 'absolute', top: '-3px', right: '-3px', width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', border: '2px solid #0d0d0d' },
+  avatarDot: { position: 'absolute', top: '-3px', right: '-3px', width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', border: '2px solid #ffffff' },
 };
 
 export default Header;

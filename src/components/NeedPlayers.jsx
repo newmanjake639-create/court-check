@@ -113,7 +113,6 @@ const NeedPlayers = ({ checkedInCourt, playerName }) => {
     ? COURTS.find(c => c.id === checkedInCourt)
     : null;
 
-  // Load broadcasts from Supabase and subscribe to real-time inserts
   useEffect(() => {
     const fetchBroadcasts = async () => {
       const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -182,7 +181,6 @@ const NeedPlayers = ({ checkedInCourt, playerName }) => {
 
   return (
     <div style={styles.wrapper}>
-      {/* Submit success */}
       {submitted && (
         <div style={styles.successToast}>
           <span style={{ fontSize: '18px' }}>📣</span>
@@ -207,7 +205,6 @@ const NeedPlayers = ({ checkedInCourt, playerName }) => {
           </button>
         </div>
 
-        {/* Broadcast Form */}
         {showForm && (
           <div style={styles.form}>
             <div style={styles.formTitle}>
@@ -308,7 +305,6 @@ const NeedPlayers = ({ checkedInCourt, playerName }) => {
         )}
       </div>
 
-      {/* Broadcasts feed */}
       <div style={styles.feed}>
         {broadcasts.length === 0 ? (
           <div style={styles.empty}>
@@ -341,21 +337,22 @@ const styles = {
     height: '100%',
     overflow: 'hidden',
     position: 'relative',
+    background: '#f5f5f5',
   },
   successToast: {
     position: 'absolute',
     top: '16px',
     right: '16px',
     zIndex: 200,
-    background: '#1a1a1a',
-    border: '1px solid rgba(255, 107, 26, 0.4)',
+    background: '#ffffff',
+    border: '1px solid rgba(255, 107, 26, 0.3)',
     borderRadius: '12px',
     padding: '14px 18px',
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
     animation: 'slideInRight 0.3s ease',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
   },
   toastTitle: {
     fontSize: '14px',
@@ -364,12 +361,13 @@ const styles = {
   },
   toastSub: {
     fontSize: '12px',
-    color: '#888',
+    color: '#999',
   },
   header: {
     padding: '20px 20px 0',
-    borderBottom: '1px solid #1f1f1f',
+    borderBottom: '1px solid #e5e5e5',
     flexShrink: 0,
+    background: '#ffffff',
   },
   headerTop: {
     display: 'flex',
@@ -380,12 +378,12 @@ const styles = {
   title: {
     fontSize: '22px',
     fontWeight: '800',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     marginBottom: '4px',
   },
   subtitle: {
     fontSize: '13px',
-    color: '#555',
+    color: '#999',
   },
   broadcastBtn: {
     padding: '10px 18px',
@@ -401,8 +399,8 @@ const styles = {
     transition: 'all 0.2s',
   },
   form: {
-    background: '#141414',
-    border: '1px solid #2a2a2a',
+    background: '#f9f9f9',
+    border: '1px solid #e5e5e5',
     borderRadius: '14px',
     padding: '16px',
     marginBottom: '16px',
@@ -420,7 +418,7 @@ const styles = {
   fieldLabel: {
     display: 'block',
     fontSize: '11px',
-    color: '#555',
+    color: '#999',
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
@@ -428,22 +426,22 @@ const styles = {
   },
   input: {
     width: '100%',
-    background: '#0d0d0d',
-    border: '1px solid #2a2a2a',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '8px',
     padding: '10px 12px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '13px',
     fontFamily: 'inherit',
     outline: 'none',
   },
   textarea: {
     width: '100%',
-    background: '#0d0d0d',
-    border: '1px solid #2a2a2a',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '8px',
     padding: '10px 12px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '13px',
     fontFamily: 'inherit',
     outline: 'none',
@@ -462,8 +460,8 @@ const styles = {
     width: '36px',
     height: '36px',
     borderRadius: '8px',
-    border: '1px solid #2a2a2a',
-    background: 'transparent',
+    border: '1px solid #e5e5e5',
+    background: '#ffffff',
     color: '#888',
     fontSize: '13px',
     fontWeight: '600',
@@ -472,17 +470,17 @@ const styles = {
     transition: 'all 0.15s',
   },
   numBtnActive: {
-    background: 'rgba(255, 107, 26, 0.15)',
+    background: 'rgba(255, 107, 26, 0.12)',
     color: '#ff6b1a',
-    borderColor: 'rgba(255, 107, 26, 0.4)',
+    borderColor: 'rgba(255, 107, 26, 0.3)',
   },
   select: {
     width: '100%',
-    background: '#0d0d0d',
-    border: '1px solid #2a2a2a',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '8px',
     padding: '10px 12px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '13px',
     fontFamily: 'inherit',
     outline: 'none',
@@ -515,16 +513,17 @@ const styles = {
     gap: '12px',
   },
   broadcastCard: {
-    background: '#141414',
-    border: '1px solid #1f1f1f',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '16px',
     padding: '16px',
     animation: 'fadeIn 0.3s ease',
     transition: 'all 0.2s',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
   },
   broadcastCardResponded: {
     borderColor: 'rgba(34, 197, 94, 0.3)',
-    background: 'rgba(34, 197, 94, 0.04)',
+    background: 'rgba(34, 197, 94, 0.03)',
   },
   bcHeader: {
     display: 'flex',
@@ -541,8 +540,8 @@ const styles = {
     width: '36px',
     height: '36px',
     borderRadius: '10px',
-    background: 'rgba(255, 107, 26, 0.15)',
-    border: '1px solid rgba(255, 107, 26, 0.3)',
+    background: 'rgba(255, 107, 26, 0.10)',
+    border: '1px solid rgba(255, 107, 26, 0.2)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -554,18 +553,18 @@ const styles = {
   bcName: {
     fontSize: '14px',
     fontWeight: '700',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
   },
   bcTime: {
     fontSize: '11px',
-    color: '#555',
+    color: '#bbb',
   },
   bcBadge: {
     fontSize: '11px',
     fontWeight: '700',
     color: '#ff6b1a',
-    background: 'rgba(255, 107, 26, 0.1)',
-    border: '1px solid rgba(255, 107, 26, 0.25)',
+    background: 'rgba(255, 107, 26, 0.08)',
+    border: '1px solid rgba(255, 107, 26, 0.2)',
     borderRadius: '20px',
     padding: '3px 10px',
     letterSpacing: '0.05em',
@@ -587,7 +586,7 @@ const styles = {
   },
   bcMessage: {
     fontSize: '14px',
-    color: '#ccc',
+    color: '#444',
     lineHeight: 1.5,
     marginBottom: '12px',
   },
@@ -603,8 +602,8 @@ const styles = {
     gap: '5px',
     fontSize: '12px',
     color: '#888',
-    background: '#1a1a1a',
-    border: '1px solid #2a2a2a',
+    background: '#f5f5f5',
+    border: '1px solid #e5e5e5',
     borderRadius: '20px',
     padding: '4px 10px',
   },
@@ -629,9 +628,9 @@ const styles = {
   dismissBtn: {
     padding: '10px 14px',
     borderRadius: '8px',
-    border: '1px solid #2a2a2a',
-    background: 'transparent',
-    color: '#555',
+    border: '1px solid #e5e5e5',
+    background: '#ffffff',
+    color: '#999',
     fontSize: '12px',
     fontWeight: '500',
     cursor: 'pointer',
@@ -652,12 +651,12 @@ const styles = {
   emptyTitle: {
     fontSize: '18px',
     fontWeight: '700',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     marginBottom: '8px',
   },
   emptyText: {
     fontSize: '14px',
-    color: '#555',
+    color: '#999',
     marginBottom: '24px',
     lineHeight: 1.6,
   },

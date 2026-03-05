@@ -36,7 +36,6 @@ const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onChe
           <button onClick={onClose} style={styles.closeBtn}>✕</button>
         </div>
 
-        {/* Avatar */}
         <div style={styles.avatarSection}>
           <div style={styles.avatar}>
             <span style={styles.avatarText}>{initials}</span>
@@ -63,7 +62,6 @@ const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onChe
 
         <div style={styles.divider} />
 
-        {/* Check-in status */}
         <div style={styles.section}>
           <div style={styles.sectionLabel}>Current Session</div>
           {checkedInCourt ? (
@@ -90,7 +88,6 @@ const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onChe
 
         <div style={styles.divider} />
 
-        {/* Quick stats */}
         <div style={styles.section}>
           <div style={styles.sectionLabel}>Today</div>
           <div style={styles.statRow}>
@@ -109,7 +106,6 @@ const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onChe
           </div>
         </div>
 
-        {/* Legal links */}
         <div style={styles.legalSection}>
           <button onClick={() => setLegalPage('tos')} style={styles.legalLink}>Terms of Service</button>
           <span style={styles.legalDot}>·</span>
@@ -121,39 +117,39 @@ const Profile = ({ playerName, setPlayerName, checkedInCourt, checkInTime, onChe
 };
 
 const styles = {
-  overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 500, display: 'flex', justifyContent: 'flex-end' },
-  panel: { width: '320px', height: '100%', background: '#111', borderLeft: '1px solid #1f1f1f', display: 'flex', flexDirection: 'column', animation: 'slideInRight 0.22s ease', overflowY: 'auto' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 20px', borderBottom: '1px solid #1f1f1f' },
-  headerTitle: { fontSize: '15px', fontWeight: '700', color: '#f0f0f0' },
-  closeBtn: { background: 'transparent', border: 'none', color: '#555', cursor: 'pointer', fontSize: '16px', fontFamily: 'inherit', padding: '4px' },
+  overlay: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)', zIndex: 500, display: 'flex', justifyContent: 'flex-end' },
+  panel: { width: '320px', height: '100%', background: '#ffffff', borderLeft: '1px solid #e5e5e5', display: 'flex', flexDirection: 'column', animation: 'slideInRight 0.22s ease', overflowY: 'auto', boxShadow: '-4px 0 24px rgba(0,0,0,0.10)' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 20px', borderBottom: '1px solid #e5e5e5' },
+  headerTitle: { fontSize: '15px', fontWeight: '700', color: '#1a1a1a' },
+  closeBtn: { background: 'transparent', border: 'none', color: '#bbb', cursor: 'pointer', fontSize: '16px', fontFamily: 'inherit', padding: '4px' },
   avatarSection: { padding: '28px 20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' },
-  avatar: { width: '72px', height: '72px', borderRadius: '18px', background: 'rgba(255,107,26,0.15)', border: '2px solid rgba(255,107,26,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  avatar: { width: '72px', height: '72px', borderRadius: '18px', background: 'rgba(255,107,26,0.10)', border: '2px solid rgba(255,107,26,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontSize: '26px', fontWeight: '900', color: '#ff6b1a' },
   nameRow: { display: 'flex', alignItems: 'center', gap: '10px' },
-  name: { fontSize: '18px', fontWeight: '700', color: '#f0f0f0' },
-  editBtn: { background: 'transparent', border: '1px solid #2a2a2a', borderRadius: '6px', color: '#555', fontSize: '11px', fontWeight: '600', padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' },
+  name: { fontSize: '18px', fontWeight: '700', color: '#1a1a1a' },
+  editBtn: { background: '#ffffff', border: '1px solid #e5e5e5', borderRadius: '6px', color: '#999', fontSize: '11px', fontWeight: '600', padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' },
   editRow: { display: 'flex', gap: '8px', width: '100%' },
-  nameInput: { flex: 1, background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '9px 12px', color: '#f0f0f0', fontSize: '14px', fontFamily: 'inherit', outline: 'none' },
+  nameInput: { flex: 1, background: '#f5f5f5', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '9px 12px', color: '#1a1a1a', fontSize: '14px', fontFamily: 'inherit', outline: 'none' },
   saveBtn: { padding: '9px 16px', borderRadius: '8px', border: 'none', background: '#ff6b1a', color: '#fff', fontSize: '13px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' },
-  divider: { height: '1px', background: '#1a1a1a', margin: '0 20px' },
+  divider: { height: '1px', background: '#f0f0f0', margin: '0 20px' },
   section: { padding: '20px' },
-  sectionLabel: { fontSize: '11px', fontWeight: '700', color: '#444', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' },
-  checkinCard: { background: '#1a1a1a', border: '1px solid rgba(255,107,26,0.2)', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '6px' },
+  sectionLabel: { fontSize: '11px', fontWeight: '700', color: '#bbb', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px' },
+  checkinCard: { background: '#fafafa', border: '1px solid rgba(255,107,26,0.15)', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '6px' },
   checkinLive: { display: 'flex', alignItems: 'center', gap: '6px' },
   liveDot: { width: '7px', height: '7px', borderRadius: '50%', background: '#22c55e', animation: 'pulse-ring 1.5s ease infinite' },
   liveText: { fontSize: '11px', fontWeight: '700', color: '#22c55e', textTransform: 'uppercase', letterSpacing: '0.06em' },
-  checkinCourt: { fontSize: '16px', fontWeight: '700', color: '#f0f0f0' },
-  checkinMeta: { fontSize: '12px', color: '#555' },
-  checkoutBtn: { marginTop: '8px', padding: '9px', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#ef4444', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' },
-  noSession: { display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', background: '#1a1a1a', borderRadius: '12px', border: '1px solid #1f1f1f' },
-  noSessionText: { fontSize: '13px', color: '#555' },
+  checkinCourt: { fontSize: '16px', fontWeight: '700', color: '#1a1a1a' },
+  checkinMeta: { fontSize: '12px', color: '#999' },
+  checkoutBtn: { marginTop: '8px', padding: '9px', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.06)', color: '#ef4444', fontSize: '13px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' },
+  noSession: { display: 'flex', alignItems: 'center', gap: '12px', padding: '14px', background: '#f9f9f9', borderRadius: '12px', border: '1px solid #f0f0f0' },
+  noSessionText: { fontSize: '13px', color: '#999' },
   statRow: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' },
-  statItem: { background: '#1a1a1a', border: '1px solid #1f1f1f', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' },
+  statItem: { background: '#f9f9f9', border: '1px solid #f0f0f0', borderRadius: '10px', padding: '12px 8px', textAlign: 'center' },
   statVal: { fontSize: '20px', fontWeight: '800', color: '#ff6b1a', marginBottom: '4px' },
-  statLbl: { fontSize: '10px', color: '#555', lineHeight: 1.3 },
+  statLbl: { fontSize: '10px', color: '#999', lineHeight: 1.3 },
   legalSection: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '16px 20px 24px', marginTop: 'auto' },
-  legalLink: { background: 'transparent', border: 'none', color: '#333', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit', padding: 0 },
-  legalDot: { color: '#2a2a2a', fontSize: '12px' },
+  legalLink: { background: 'transparent', border: 'none', color: '#bbb', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit', padding: 0 },
+  legalDot: { color: '#ddd', fontSize: '12px' },
 };
 
 export default Profile;

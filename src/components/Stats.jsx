@@ -2,7 +2,7 @@ import { COURTS as STATIC_COURTS, getCourtStatus } from '../data/courts';
 
 const StatCard = ({ label, value, sub, accent }) => (
   <div style={styles.statCard}>
-    <div style={{ ...styles.statValue, color: accent || '#f0f0f0' }}>{value}</div>
+    <div style={{ ...styles.statValue, color: accent || '#1a1a1a' }}>{value}</div>
     <div style={styles.statLabel}>{label}</div>
     {sub && <div style={styles.statSub}>{sub}</div>}
   </div>
@@ -11,7 +11,7 @@ const StatCard = ({ label, value, sub, accent }) => (
 const CourtRow = ({ court, rank }) => {
   const status = getCourtStatus(court);
   const fill = Math.round((court.checkedIn / court.maxPlayers) * 100);
-  const barColor = fill >= 75 ? '#ef4444' : fill >= 40 ? '#eab308' : fill > 0 ? '#22c55e' : '#333';
+  const barColor = fill >= 75 ? '#ef4444' : fill >= 40 ? '#eab308' : fill > 0 ? '#22c55e' : '#e5e5e5';
 
   return (
     <div style={styles.courtRow}>
@@ -28,9 +28,9 @@ const CourtRow = ({ court, rank }) => {
             <div style={{ ...styles.barFill, width: `${fill}%`, background: barColor }} />
           </div>
           <span style={styles.barLabel}>
-            <span style={{ color: '#f0f0f0', fontWeight: 700 }}>{court.checkedIn}</span>
-            <span style={{ color: '#444' }}>/{court.maxPlayers}</span>
-            <span style={{ color: '#555', marginLeft: 6 }}>{fill}%</span>
+            <span style={{ color: '#1a1a1a', fontWeight: 700 }}>{court.checkedIn}</span>
+            <span style={{ color: '#ccc' }}>/{court.maxPlayers}</span>
+            <span style={{ color: '#999', marginLeft: 6 }}>{fill}%</span>
           </span>
         </div>
       </div>
@@ -57,7 +57,6 @@ const Stats = ({ courts, isMobile }) => {
     </div>
 
     <div style={styles.scroll}>
-      {/* Top stat cards */}
       <div style={{ ...styles.statGrid, gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)' }}>
         <StatCard
           label="Total Players"
@@ -95,7 +94,6 @@ const Stats = ({ courts, isMobile }) => {
         />
       </div>
 
-      {/* Overall fill bar */}
       <div style={styles.section}>
         <div style={styles.sectionHeader}>
           <span style={styles.sectionTitle}>Network Fill Rate</span>
@@ -121,7 +119,6 @@ const Stats = ({ courts, isMobile }) => {
         </div>
       </div>
 
-      {/* Court-by-court breakdown */}
       <div style={styles.section}>
         <div style={styles.sectionHeader}>
           <span style={styles.sectionTitle}>Courts by Player Count</span>
@@ -134,7 +131,6 @@ const Stats = ({ courts, isMobile }) => {
         </div>
       </div>
 
-      {/* Activity breakdown by level */}
       <div style={{ ...styles.twoCol, gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr' }}>
         <div style={styles.section}>
           <div style={styles.sectionHeader}>
@@ -192,21 +188,23 @@ const styles = {
     flexDirection: 'column',
     height: '100%',
     overflow: 'hidden',
+    background: '#f5f5f5',
   },
   header: {
     padding: '20px 20px 16px',
-    borderBottom: '1px solid #1f1f1f',
+    borderBottom: '1px solid #e5e5e5',
     flexShrink: 0,
+    background: '#ffffff',
   },
   title: {
     fontSize: '22px',
     fontWeight: '800',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     marginBottom: '4px',
   },
   subtitle: {
     fontSize: '13px',
-    color: '#555',
+    color: '#999',
   },
   scroll: {
     flex: 1,
@@ -222,13 +220,14 @@ const styles = {
     gap: '10px',
   },
   statCard: {
-    background: '#141414',
-    border: '1px solid #1f1f1f',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '14px',
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
     gap: '3px',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
   },
   statValue: {
     fontSize: '28px',
@@ -242,14 +241,15 @@ const styles = {
   },
   statSub: {
     fontSize: '11px',
-    color: '#444',
+    color: '#bbb',
     marginTop: '2px',
   },
   section: {
-    background: '#141414',
-    border: '1px solid #1f1f1f',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '14px',
     padding: '16px',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
   },
   sectionHeader: {
     display: 'flex',
@@ -260,17 +260,17 @@ const styles = {
   sectionTitle: {
     fontSize: '13px',
     fontWeight: '700',
-    color: '#888',
+    color: '#999',
     textTransform: 'uppercase',
     letterSpacing: '0.06em',
   },
   sectionValue: {
     fontSize: '12px',
-    color: '#444',
+    color: '#bbb',
   },
   bigBarTrack: {
     height: '10px',
-    background: '#222',
+    background: '#f0f0f0',
     borderRadius: '5px',
     overflow: 'hidden',
     marginBottom: '8px',
@@ -286,7 +286,7 @@ const styles = {
   },
   barCaption: {
     fontSize: '11px',
-    color: '#444',
+    color: '#bbb',
   },
   courtList: {
     display: 'flex',
@@ -301,7 +301,7 @@ const styles = {
   courtRank: {
     fontSize: '12px',
     fontWeight: '700',
-    color: '#444',
+    color: '#ccc',
     width: '24px',
     flexShrink: 0,
     textAlign: 'right',
@@ -320,7 +320,7 @@ const styles = {
   courtName: {
     fontSize: '13px',
     fontWeight: '600',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -340,7 +340,7 @@ const styles = {
   barTrack: {
     flex: 1,
     height: '5px',
-    background: '#222',
+    background: '#f0f0f0',
     borderRadius: '3px',
     overflow: 'hidden',
   },
@@ -377,7 +377,7 @@ const styles = {
   levelBar: {
     flex: 1,
     height: '5px',
-    background: '#222',
+    background: '#f0f0f0',
     borderRadius: '3px',
     overflow: 'hidden',
   },
@@ -390,7 +390,7 @@ const styles = {
   levelCount: {
     fontSize: '12px',
     fontWeight: '700',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     width: '20px',
     textAlign: 'right',
     flexShrink: 0,

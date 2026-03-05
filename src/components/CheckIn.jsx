@@ -135,7 +135,6 @@ const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playe
               </div>
             </div>
 
-            {/* ToS checkbox */}
             <button style={styles.tosRow} onClick={() => setTosChecked(c => !c)}>
               <div style={{ ...styles.tosCheckbox, ...(tosChecked ? styles.tosCheckboxOn : {}) }}>
                 {tosChecked && <span style={styles.tosCheckmark}>✓</span>}
@@ -223,8 +222,8 @@ const CheckIn = ({ courts, checkedInCourt, setCheckedInCourt, checkInTime, playe
                     {status.label}
                   </span>
                   <div style={styles.playerCount}>
-                    <span style={{ color: '#f0f0f0', fontWeight: '700' }}>{court.checkedIn}</span>
-                    <span style={{ color: '#444' }}>/{court.maxPlayers}</span>
+                    <span style={{ color: '#1a1a1a', fontWeight: '700' }}>{court.checkedIn}</span>
+                    <span style={{ color: '#ccc' }}>/{court.maxPlayers}</span>
                   </div>
                 </div>
               </div>
@@ -263,21 +262,22 @@ const styles = {
     height: '100%',
     overflow: 'hidden',
     position: 'relative',
+    background: '#f5f5f5',
   },
   toast: {
     position: 'absolute',
     top: '16px',
     right: '16px',
     zIndex: 200,
-    background: '#1a1a1a',
-    border: '1px solid rgba(34, 197, 94, 0.4)',
+    background: '#ffffff',
+    border: '1px solid rgba(34, 197, 94, 0.3)',
     borderRadius: '12px',
     padding: '14px 18px',
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
     animation: 'slideInRight 0.3s ease',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.10)',
   },
   toastTitle: {
     fontSize: '14px',
@@ -286,12 +286,12 @@ const styles = {
   },
   toastSub: {
     fontSize: '12px',
-    color: '#888',
+    color: '#999',
   },
   activeCheckin: {
     margin: '16px',
-    background: 'linear-gradient(135deg, rgba(255, 107, 26, 0.12), rgba(255, 107, 26, 0.06))',
-    border: '1px solid rgba(255, 107, 26, 0.3)',
+    background: 'linear-gradient(135deg, rgba(255, 107, 26, 0.08), rgba(255, 107, 26, 0.04))',
+    border: '1px solid rgba(255, 107, 26, 0.2)',
     borderRadius: '16px',
     padding: '16px',
     flexShrink: 0,
@@ -332,7 +332,7 @@ const styles = {
   activeName: {
     fontSize: '17px',
     fontWeight: '800',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
   },
   activeDetails: {
     display: 'flex',
@@ -356,8 +356,8 @@ const styles = {
     width: '100%',
     padding: '10px',
     borderRadius: '8px',
-    border: '1px solid rgba(239, 68, 68, 0.3)',
-    background: 'rgba(239, 68, 68, 0.1)',
+    border: '1px solid rgba(239, 68, 68, 0.25)',
+    background: 'rgba(239, 68, 68, 0.06)',
     color: '#ef4444',
     fontSize: '13px',
     fontWeight: '600',
@@ -368,7 +368,7 @@ const styles = {
   modalOverlay: {
     position: 'absolute',
     inset: 0,
-    background: 'rgba(0, 0, 0, 0.7)',
+    background: 'rgba(0, 0, 0, 0.3)',
     backdropFilter: 'blur(4px)',
     zIndex: 100,
     display: 'flex',
@@ -377,13 +377,14 @@ const styles = {
     padding: '20px',
   },
   modal: {
-    background: '#1a1a1a',
-    border: '1px solid #2a2a2a',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '20px',
     padding: '28px 24px',
     width: '100%',
     maxWidth: '380px',
     animation: 'fadeIn 0.2s ease',
+    boxShadow: '0 16px 48px rgba(0,0,0,0.15)',
   },
   modalIcon: {
     fontSize: '36px',
@@ -392,7 +393,7 @@ const styles = {
   },
   modalTitle: {
     fontSize: '13px',
-    color: '#555',
+    color: '#999',
     textAlign: 'center',
     fontWeight: '500',
     marginBottom: '4px',
@@ -400,7 +401,7 @@ const styles = {
   modalCourtName: {
     fontSize: '20px',
     fontWeight: '800',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     textAlign: 'center',
     marginBottom: '24px',
   },
@@ -410,7 +411,7 @@ const styles = {
   fieldLabel: {
     display: 'block',
     fontSize: '12px',
-    color: '#555',
+    color: '#999',
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
@@ -418,11 +419,11 @@ const styles = {
   },
   input: {
     width: '100%',
-    background: '#141414',
-    border: '1px solid #2a2a2a',
+    background: '#f9f9f9',
+    border: '1px solid #e5e5e5',
     borderRadius: '10px',
     padding: '12px 14px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '14px',
     fontFamily: 'inherit',
     outline: 'none',
@@ -436,8 +437,8 @@ const styles = {
   durationBtn: {
     padding: '10px',
     borderRadius: '8px',
-    border: '1px solid #2a2a2a',
-    background: 'transparent',
+    border: '1px solid #e5e5e5',
+    background: '#ffffff',
     color: '#888',
     fontSize: '13px',
     fontWeight: '600',
@@ -446,17 +447,17 @@ const styles = {
     transition: 'all 0.15s',
   },
   durationBtnActive: {
-    background: 'rgba(255, 107, 26, 0.15)',
+    background: 'rgba(255, 107, 26, 0.12)',
     color: '#ff6b1a',
-    borderColor: 'rgba(255, 107, 26, 0.4)',
+    borderColor: 'rgba(255, 107, 26, 0.3)',
   },
   tosRow: {
     width: '100%',
     display: 'flex',
     alignItems: 'center',
     gap: '10px',
-    background: '#141414',
-    border: '1px solid #2a2a2a',
+    background: '#f9f9f9',
+    border: '1px solid #e5e5e5',
     borderRadius: '10px',
     padding: '11px 13px',
     cursor: 'pointer',
@@ -468,7 +469,7 @@ const styles = {
     width: '17px',
     height: '17px',
     borderRadius: '4px',
-    border: '1.5px solid #333',
+    border: '1.5px solid #ddd',
     background: 'transparent',
     flexShrink: 0,
     display: 'flex',
@@ -488,7 +489,7 @@ const styles = {
   },
   tosText: {
     fontSize: '12px',
-    color: '#777',
+    color: '#888',
     lineHeight: 1.4,
   },
   tosLink: {
@@ -507,8 +508,8 @@ const styles = {
   cancelBtn: {
     padding: '12px',
     borderRadius: '10px',
-    border: '1px solid #2a2a2a',
-    background: 'transparent',
+    border: '1px solid #e5e5e5',
+    background: '#f5f5f5',
     color: '#888',
     fontSize: '14px',
     fontWeight: '600',
@@ -533,18 +534,19 @@ const styles = {
   },
   header: {
     padding: '20px 20px 16px',
-    borderBottom: '1px solid #1f1f1f',
+    borderBottom: '1px solid #e5e5e5',
     flexShrink: 0,
+    background: '#ffffff',
   },
   title: {
     fontSize: '22px',
     fontWeight: '800',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     marginBottom: '4px',
   },
   subtitle: {
     fontSize: '13px',
-    color: '#555',
+    color: '#999',
     marginBottom: '14px',
   },
   searchWrapper: {
@@ -559,11 +561,11 @@ const styles = {
   },
   searchInput: {
     width: '100%',
-    background: '#141414',
-    border: '1px solid #2a2a2a',
+    background: '#f5f5f5',
+    border: '1px solid #e5e5e5',
     borderRadius: '10px',
     padding: '10px 14px 10px 36px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '13px',
     fontFamily: 'inherit',
     outline: 'none',
@@ -577,15 +579,16 @@ const styles = {
     gap: '8px',
   },
   courtRow: {
-    background: '#141414',
-    border: '1px solid #1f1f1f',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '12px',
     padding: '12px',
     animation: 'fadeIn 0.3s ease',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
   },
   courtRowActive: {
-    borderColor: 'rgba(255, 107, 26, 0.3)',
-    background: 'rgba(255, 107, 26, 0.05)',
+    borderColor: 'rgba(255, 107, 26, 0.25)',
+    background: 'rgba(255, 107, 26, 0.03)',
   },
   courtInfo: {
     display: 'flex',
@@ -604,8 +607,8 @@ const styles = {
     width: '36px',
     height: '36px',
     borderRadius: '8px',
-    background: '#1a1a1a',
-    border: '1px solid #2a2a2a',
+    background: '#f5f5f5',
+    border: '1px solid #e5e5e5',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -614,14 +617,14 @@ const styles = {
   courtName: {
     fontSize: '14px',
     fontWeight: '700',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
   courtAddr: {
     fontSize: '11px',
-    color: '#555',
+    color: '#bbb',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -646,8 +649,8 @@ const styles = {
     width: '100%',
     padding: '9px',
     borderRadius: '8px',
-    border: '1px solid rgba(255, 107, 26, 0.3)',
-    background: 'rgba(255, 107, 26, 0.1)',
+    border: '1px solid rgba(255, 107, 26, 0.25)',
+    background: 'rgba(255, 107, 26, 0.08)',
     color: '#ff6b1a',
     fontSize: '13px',
     fontWeight: '600',
@@ -658,9 +661,9 @@ const styles = {
   checkInBtnDisabled: {
     opacity: 0.3,
     cursor: 'not-allowed',
-    borderColor: '#2a2a2a',
+    borderColor: '#e5e5e5',
     background: 'transparent',
-    color: '#555',
+    color: '#bbb',
   },
   checkedInRow: {
     display: 'flex',
@@ -676,8 +679,8 @@ const styles = {
   smallCheckoutBtn: {
     padding: '6px 12px',
     borderRadius: '6px',
-    border: '1px solid rgba(239, 68, 68, 0.3)',
-    background: 'rgba(239, 68, 68, 0.1)',
+    border: '1px solid rgba(239, 68, 68, 0.25)',
+    background: 'rgba(239, 68, 68, 0.06)',
     color: '#ef4444',
     fontSize: '12px',
     fontWeight: '600',

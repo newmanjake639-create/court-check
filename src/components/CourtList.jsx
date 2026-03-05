@@ -41,9 +41,9 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc }) => 
           <div style={styles.cardMeta2}>
             <span style={{
               ...styles.typeBadge,
-              background: court.indoor ? 'rgba(59,130,246,0.1)' : 'rgba(34,197,94,0.08)',
-              color: court.indoor ? '#60a5fa' : '#22c55e',
-              borderColor: court.indoor ? 'rgba(59,130,246,0.3)' : 'rgba(34,197,94,0.25)',
+              background: court.indoor ? 'rgba(59,130,246,0.08)' : 'rgba(34,197,94,0.08)',
+              color: court.indoor ? '#3b82f6' : '#16a34a',
+              borderColor: court.indoor ? 'rgba(59,130,246,0.2)' : 'rgba(34,197,94,0.2)',
             }}>
               {court.indoor ? '🏛️ Indoor' : '🌳 Outdoor'}
             </span>
@@ -73,15 +73,15 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc }) => 
         <div style={styles.barHeader}>
           <span style={styles.barLabel}>Players</span>
           <span style={styles.barCount}>
-            <span style={{ color: '#f0f0f0', fontWeight: '600' }}>{court.checkedIn}</span>
-            <span style={{ color: '#555' }}>/{court.maxPlayers}</span>
+            <span style={{ color: '#1a1a1a', fontWeight: '600' }}>{court.checkedIn}</span>
+            <span style={{ color: '#ccc' }}>/{court.maxPlayers}</span>
           </span>
         </div>
         <div style={styles.barTrack}>
           <div style={{
             ...styles.barFill,
             width: `${fillPercent}%`,
-            background: fillPercent >= 75 ? '#ef4444' : fillPercent >= 40 ? '#eab308' : fillPercent > 0 ? '#22c55e' : '#333',
+            background: fillPercent >= 75 ? '#ef4444' : fillPercent >= 40 ? '#eab308' : fillPercent > 0 ? '#22c55e' : '#e5e5e5',
           }} />
         </div>
       </div>
@@ -220,14 +220,16 @@ const styles = {
     flexDirection: 'column',
     height: '100%',
     overflow: 'hidden',
+    background: '#f5f5f5',
   },
   topBar: {
     padding: '16px 20px 12px',
-    borderBottom: '1px solid #1f1f1f',
+    borderBottom: '1px solid #e5e5e5',
     display: 'flex',
     flexDirection: 'column',
     gap: '10px',
     flexShrink: 0,
+    background: '#ffffff',
   },
   filterRow: {
     display: 'flex',
@@ -237,9 +239,9 @@ const styles = {
   filterBtn: {
     padding: '6px 12px',
     borderRadius: '20px',
-    border: '1px solid #2a2a2a',
-    background: 'transparent',
-    color: '#888',
+    border: '1px solid #e5e5e5',
+    background: '#ffffff',
+    color: '#999',
     fontSize: '12px',
     fontWeight: '500',
     cursor: 'pointer',
@@ -247,9 +249,9 @@ const styles = {
     transition: 'all 0.15s',
   },
   filterBtnActive: {
-    background: 'rgba(255, 107, 26, 0.12)',
+    background: 'rgba(255, 107, 26, 0.10)',
     color: '#ff6b1a',
-    borderColor: 'rgba(255, 107, 26, 0.3)',
+    borderColor: 'rgba(255, 107, 26, 0.25)',
   },
   sortRow: {
     display: 'flex',
@@ -258,12 +260,12 @@ const styles = {
   },
   sortLabel: {
     fontSize: '12px',
-    color: '#555',
+    color: '#999',
   },
   sortSelect: {
-    background: '#1a1a1a',
-    border: '1px solid #2a2a2a',
-    color: '#888',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
+    color: '#666',
     fontSize: '12px',
     padding: '4px 8px',
     borderRadius: '6px',
@@ -280,17 +282,19 @@ const styles = {
     gap: '10px',
   },
   card: {
-    background: '#141414',
-    border: '1px solid #1f1f1f',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '14px',
     padding: '14px',
     cursor: 'pointer',
     transition: 'all 0.2s',
     animation: 'fadeIn 0.3s ease',
+    boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
   },
   cardSelected: {
     borderColor: 'rgba(255, 107, 26, 0.4)',
-    background: 'rgba(255, 107, 26, 0.05)',
+    background: 'rgba(255, 107, 26, 0.03)',
+    boxShadow: '0 2px 12px rgba(255,107,26,0.12)',
   },
   cardCheckedIn: {
     borderColor: 'rgba(34, 197, 94, 0.3)',
@@ -320,7 +324,7 @@ const styles = {
   cardName: {
     fontSize: '15px',
     fontWeight: '700',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     marginBottom: '2px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
@@ -328,7 +332,7 @@ const styles = {
   },
   cardAddress: {
     fontSize: '12px',
-    color: '#555',
+    color: '#999',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -353,7 +357,7 @@ const styles = {
   },
   rating: {
     fontSize: '12px',
-    color: '#888',
+    color: '#999',
     fontWeight: '600',
   },
   barSection: {
@@ -367,7 +371,7 @@ const styles = {
   },
   barLabel: {
     fontSize: '11px',
-    color: '#555',
+    color: '#999',
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
   },
@@ -376,7 +380,7 @@ const styles = {
   },
   barTrack: {
     height: '4px',
-    background: '#2a2a2a',
+    background: '#f0f0f0',
     borderRadius: '2px',
     overflow: 'hidden',
   },
@@ -401,7 +405,7 @@ const styles = {
   },
   metaText: {
     fontSize: '12px',
-    color: '#777',
+    color: '#888',
   },
   cardMeta2: {
     display: 'flex',
@@ -420,12 +424,12 @@ const styles = {
   },
   cityLabel: {
     fontSize: '10px',
-    color: '#444',
+    color: '#bbb',
     whiteSpace: 'nowrap',
   },
   distLabel: {
     fontSize: '10px',
-    color: '#555',
+    color: '#999',
     whiteSpace: 'nowrap',
     marginLeft: 'auto',
   },
@@ -433,8 +437,8 @@ const styles = {
     display: 'flex',
     gap: '8px',
     alignItems: 'flex-start',
-    background: 'rgba(255, 107, 26, 0.08)',
-    border: '1px solid rgba(255, 107, 26, 0.2)',
+    background: 'rgba(255, 107, 26, 0.07)',
+    border: '1px solid rgba(255, 107, 26, 0.18)',
     borderRadius: '8px',
     padding: '8px 10px',
   },
@@ -448,7 +452,7 @@ const styles = {
     padding: '60px 20px',
   },
   emptyText: {
-    color: '#555',
+    color: '#999',
     fontSize: '14px',
   },
 };

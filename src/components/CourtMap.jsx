@@ -4,34 +4,20 @@ import { getCourtStatus } from '../data/courts';
 
 const MAP_CENTER = { lat: 40.7450, lng: -74.0290 };
 
-const DARK_MAP_STYLES = [
-  { elementType: 'geometry', stylers: [{ color: '#0d0d0d' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#0d0d0d' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#555555' }] },
-  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#888888' }] },
-  { featureType: 'administrative.neighborhood', elementType: 'labels.text.fill', stylers: [{ color: '#666666' }] },
+const LIGHT_MAP_STYLES = [
   { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#141414' }] },
-  { featureType: 'poi.park', elementType: 'labels.text.fill', stylers: [{ color: '#333333' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#1c1c1c' }] },
-  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#000000' }] },
-  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#666666' }] },
-  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#2a2a2a' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#333333' }] },
-  { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#111111' }] },
-  { featureType: 'road.highway', elementType: 'labels.text.fill', stylers: [{ color: '#888888' }] },
-  { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#1a1a1a' }] },
-  { featureType: 'transit.station', elementType: 'labels.text.fill', stylers: [{ color: '#555555' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#050505' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#222222' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#e8f5e4' }] },
+  { featureType: 'transit', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c5dff5' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#f5f5f0' }] },
+  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+  { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f8f8f5' }] },
 ];
 
 const createMarkerSvg = (court, isSelected) => {
   const status = getCourtStatus(court);
   const isIndoor = court.indoor;
 
-  // Outdoor: dark bg, status/orange stroke — unchanged
-  // Indoor: very dark navy bg, neon blue (#00D4FF) stroke + glow
   const fillColor = isIndoor
     ? '#0a1628'
     : court.needPlayers ? '#ff6b1a' : '#141414';
@@ -45,8 +31,6 @@ const createMarkerSvg = (court, isSelected) => {
   const size = isSelected ? 42 : 36;
   const anchorH = isSelected ? 51 : 44;
 
-  // Indoor: custom neon-blue basketball drawn with SVG paths
-  // Outdoor: keep the 🏀 emoji exactly as-is
   const ballContent = isIndoor
     ? `<circle cx="18" cy="18" r="9" fill="#00D4FF" opacity="0.93"/>
        <path d="M18 9 C13.5 11 13.5 25 18 27" fill="none" stroke="#006E88" stroke-width="1.4" stroke-linecap="round"/>
@@ -64,7 +48,7 @@ const createMarkerSvg = (court, isSelected) => {
     <path d="M18 0C8.06 0 0 8.06 0 18C0 31.5 18 44 18 44C18 44 36 31.5 36 18C36 8.06 27.94 0 18 0Z"
       fill="${fillColor}" stroke="${strokeColor}" stroke-width="2" filter="url(#sh)"/>
     ${ballContent}
-    ${court.needPlayers ? `<circle cx="29" cy="7" r="6" fill="#ff6b1a" stroke="#0d0d0d" stroke-width="1.5"/>
+    ${court.needPlayers ? `<circle cx="29" cy="7" r="6" fill="#ff6b1a" stroke="#ffffff" stroke-width="1.5"/>
     <text x="29" y="11" text-anchor="middle" font-size="9" font-family="Arial,sans-serif" fill="white" font-weight="bold">!</text>` : ''}
   </svg>`;
   return { svg, size, anchorH };
@@ -74,7 +58,7 @@ const createMarkerSvg = (court, isSelected) => {
 const CourtInfoWindow = ({ court, onDetails }) => {
   const status = getCourtStatus(court);
   const fill = Math.round((court.checkedIn / court.maxPlayers) * 100);
-  const barColor = fill >= 75 ? '#ef4444' : fill >= 40 ? '#eab308' : fill > 0 ? '#22c55e' : '#555';
+  const barColor = fill >= 75 ? '#ef4444' : fill >= 40 ? '#eab308' : fill > 0 ? '#22c55e' : '#ccc';
 
   return (
     <div style={iw.wrap}>
@@ -124,19 +108,19 @@ const CourtInfoWindow = ({ court, onDetails }) => {
 const iw = {
   wrap: { padding: '14px', minWidth: '220px', maxWidth: '260px', fontFamily: "'Inter', system-ui, sans-serif" },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '4px' },
-  name: { fontSize: '14px', fontWeight: '800', color: '#f0f0f0', lineHeight: 1.3 },
+  name: { fontSize: '14px', fontWeight: '800', color: '#1a1a1a', lineHeight: 1.3 },
   badge: { fontSize: '10px', fontWeight: '700', padding: '2px 7px', borderRadius: '20px', whiteSpace: 'nowrap', flexShrink: 0 },
-  address: { fontSize: '11px', color: '#555', marginBottom: '12px' },
+  address: { fontSize: '11px', color: '#999', marginBottom: '12px' },
   stats: { display: 'flex', alignItems: 'center', gap: '0', marginBottom: '10px' },
   stat: { flex: 1, textAlign: 'center' },
-  statVal: { fontSize: '20px', fontWeight: '900', color: '#f0f0f0', lineHeight: 1 },
-  statLbl: { fontSize: '9px', color: '#444', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '2px' },
-  statDivider: { width: '1px', height: '32px', background: '#2a2a2a', flexShrink: 0 },
-  barTrack: { height: '4px', background: '#2a2a2a', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' },
+  statVal: { fontSize: '20px', fontWeight: '900', color: '#1a1a1a', lineHeight: 1 },
+  statLbl: { fontSize: '9px', color: '#999', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '2px' },
+  statDivider: { width: '1px', height: '32px', background: '#e5e5e5', flexShrink: 0 },
+  barTrack: { height: '4px', background: '#e5e5e5', borderRadius: '2px', overflow: 'hidden', marginBottom: '10px' },
   barFill: { height: '100%', borderRadius: '2px' },
   needAlert: { fontSize: '11px', color: '#ff6b1a', background: 'rgba(255,107,26,0.08)', border: '1px solid rgba(255,107,26,0.2)', borderRadius: '6px', padding: '6px 8px', marginBottom: '10px', lineHeight: 1.4 },
   actions: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' },
-  mapsBtn: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', padding: '8px', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#1a1a1a', color: '#888', fontSize: '11px', fontWeight: '600', textDecoration: 'none', fontFamily: 'inherit' },
+  mapsBtn: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', padding: '8px', borderRadius: '8px', border: '1px solid #e5e5e5', background: '#f5f5f5', color: '#666', fontSize: '11px', fontWeight: '600', textDecoration: 'none', fontFamily: 'inherit' },
   detailBtn: { padding: '8px', borderRadius: '8px', border: 'none', background: '#ff6b1a', color: '#fff', fontSize: '11px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' },
 };
 
@@ -149,7 +133,6 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-  // Catch Google Maps auth failures (invalid key, API not enabled, referrer blocked)
   useEffect(() => {
     window.gm_authFailure = () => setAuthError(true);
     return () => { delete window.gm_authFailure; };
@@ -162,7 +145,6 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
 
   const onMapLoad = useCallback(map => {
     mapRef.current = map;
-    // Fit all courts into view on initial load
     if (window.google && courts.length > 0) {
       const bounds = new window.google.maps.LatLngBounds();
       courts.forEach(c => bounds.extend({ lat: c.lat, lng: c.lng }));
@@ -170,7 +152,6 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
     }
   }, [courts]);
 
-  // Pan to court when selected from list or other views
   useEffect(() => {
     if (selectedCourt && mapRef.current) {
       mapRef.current.panTo({ lat: selectedCourt.lat, lng: selectedCourt.lng });
@@ -209,7 +190,6 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
 
   const activeCourt = courts.find(c => c.id === activeInfoId);
 
-  // No API key — show setup prompt
   if (!apiKey || apiKey === 'YOUR_GOOGLE_MAPS_API_KEY_HERE') {
     return (
       <div style={styles.placeholder}>
@@ -238,10 +218,10 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
         <div style={styles.placeholderTitle}>Maps API Error</div>
         <div style={styles.placeholderText}>
           Your API key was rejected. Most likely fix:<br /><br />
-          1. Go to <strong style={{ color: '#f0f0f0' }}>Google Cloud Console</strong><br />
-          2. Search for <strong style={{ color: '#f0f0f0' }}>"Maps JavaScript API"</strong><br />
-          3. Click <strong style={{ color: '#f0f0f0' }}>Enable</strong><br />
-          4. Make sure the key has <strong style={{ color: '#f0f0f0' }}>no HTTP referrer restrictions</strong> (or add <code style={styles.code}>localhost</code>)
+          1. Go to <strong style={{ color: '#1a1a1a' }}>Google Cloud Console</strong><br />
+          2. Search for <strong style={{ color: '#1a1a1a' }}>"Maps JavaScript API"</strong><br />
+          3. Click <strong style={{ color: '#1a1a1a' }}>Enable</strong><br />
+          4. Make sure the key has <strong style={{ color: '#1a1a1a' }}>no HTTP referrer restrictions</strong> (or add <code style={styles.code}>localhost</code>)
         </div>
         <a
           href="https://console.cloud.google.com/apis/library/maps-backend.googleapis.com"
@@ -272,7 +252,7 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
         zoom={14}
         mapTypeId={mapType}
         options={{
-          styles: mapType === 'roadmap' ? DARK_MAP_STYLES : undefined,
+          styles: mapType === 'roadmap' ? LIGHT_MAP_STYLES : undefined,
           disableDefaultUI: true,
           zoomControl: true,
           zoomControlOptions: {
@@ -375,14 +355,14 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    background: '#0d0d0d',
+    background: '#f5f5f5',
     gap: '12px',
     padding: '32px',
     textAlign: 'center',
   },
   placeholderIcon: { fontSize: '48px' },
-  placeholderTitle: { fontSize: '18px', fontWeight: '700', color: '#f0f0f0' },
-  placeholderText: { fontSize: '13px', color: '#555', lineHeight: 1.7 },
+  placeholderTitle: { fontSize: '18px', fontWeight: '700', color: '#1a1a1a' },
+  placeholderText: { fontSize: '13px', color: '#666', lineHeight: 1.7 },
   placeholderLink: {
     marginTop: '8px',
     display: 'inline-block',
@@ -394,24 +374,25 @@ const styles = {
     fontWeight: '700',
     textDecoration: 'none',
   },
-  code: { background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: '4px', padding: '2px 6px', fontFamily: 'monospace', color: '#ff6b1a', fontSize: '12px' },
+  code: { background: '#f0f0f0', border: '1px solid #e5e5e5', borderRadius: '4px', padding: '2px 6px', fontFamily: 'monospace', color: '#ff6b1a', fontSize: '12px' },
   toggle: {
     position: 'absolute',
     top: '12px',
     left: '12px',
     display: 'flex',
-    background: 'rgba(13,13,13,0.92)',
-    border: '1px solid #2a2a2a',
+    background: 'rgba(255,255,255,0.95)',
+    border: '1px solid #e5e5e5',
     borderRadius: '10px',
     overflow: 'hidden',
     zIndex: 10,
     backdropFilter: 'blur(8px)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
   },
   toggleBtn: {
     padding: '8px 14px',
     background: 'transparent',
     border: 'none',
-    color: '#666',
+    color: '#999',
     fontSize: '12px',
     fontWeight: '600',
     cursor: 'pointer',
@@ -420,7 +401,7 @@ const styles = {
     whiteSpace: 'nowrap',
   },
   toggleBtnActive: {
-    background: 'rgba(255,107,26,0.15)',
+    background: 'rgba(255,107,26,0.12)',
     color: '#ff6b1a',
   },
   legend: {
@@ -428,14 +409,15 @@ const styles = {
     bottom: '12px',
     left: '12px',
     zIndex: 10,
-    background: 'rgba(10,10,10,0.88)',
-    border: '1px solid #2a2a2a',
+    background: 'rgba(255,255,255,0.95)',
+    border: '1px solid #e5e5e5',
     borderRadius: '10px',
     padding: '8px 12px',
     backdropFilter: 'blur(8px)',
     display: 'flex',
     flexDirection: 'column',
     gap: '7px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
   },
   legendItem: {
     display: 'flex',
@@ -445,7 +427,7 @@ const styles = {
   legendLabel: {
     fontSize: '11px',
     fontWeight: '600',
-    color: '#888',
+    color: '#666',
     whiteSpace: 'nowrap',
   },
   locateBtn: {
@@ -456,9 +438,9 @@ const styles = {
     width: '36px',
     height: '36px',
     borderRadius: '8px',
-    border: '1px solid #2a2a2a',
-    background: 'rgba(13,13,13,0.92)',
-    color: '#f0f0f0',
+    border: '1px solid #e5e5e5',
+    background: 'rgba(255,255,255,0.95)',
+    color: '#1a1a1a',
     fontSize: '16px',
     cursor: 'pointer',
     backdropFilter: 'blur(8px)',
@@ -466,6 +448,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     fontFamily: 'inherit',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
   },
 };
 

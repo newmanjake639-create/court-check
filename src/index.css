@@ -5,24 +5,24 @@
 }
 
 :root {
-  --bg-primary: #0d0d0d;
-  --bg-secondary: #141414;
-  --bg-card: #1a1a1a;
-  --bg-card-hover: #212121;
-  --border: #2a2a2a;
-  --border-light: #333;
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f9f9f9;
+  --border: #e5e5e5;
+  --border-light: #d9d9d9;
   --accent: #ff6b1a;
-  --accent-dim: rgba(255, 107, 26, 0.15);
+  --accent-dim: rgba(255, 107, 26, 0.12);
   --accent-hover: #ff8540;
-  --text-primary: #f0f0f0;
-  --text-secondary: #888;
-  --text-muted: #555;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
   --green: #22c55e;
-  --green-dim: rgba(34, 197, 94, 0.15);
+  --green-dim: rgba(34, 197, 94, 0.12);
   --red: #ef4444;
-  --red-dim: rgba(239, 68, 68, 0.15);
+  --red-dim: rgba(239, 68, 68, 0.12);
   --yellow: #eab308;
-  --yellow-dim: rgba(234, 179, 8, 0.15);
+  --yellow-dim: rgba(234, 179, 8, 0.12);
 }
 
 html, body, #root {
@@ -48,23 +48,23 @@ body {
   width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: #f0f0f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-light);
+  background: #ccc;
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent);
 }
 
-/* Google Maps InfoWindow dark theme */
+/* Google Maps InfoWindow light theme */
 .gm-style .gm-style-iw-c {
-  background: #141414 !important;
-  border: 1px solid #2a2a2a !important;
+  background: #ffffff !important;
+  border: 1px solid #e5e5e5 !important;
   border-radius: 14px !important;
   padding: 0 !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.7) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
 }
 
 .gm-style .gm-style-iw-d {
@@ -73,7 +73,7 @@ body {
 }
 
 .gm-style .gm-style-iw-t::after {
-  background: #141414 !important;
+  background: #ffffff !important;
 }
 
 .gm-style-iw-ch {
@@ -83,19 +83,19 @@ body {
 button.gm-ui-hover-effect {
   top: 4px !important;
   right: 4px !important;
-  opacity: 0.6 !important;
+  opacity: 0.5 !important;
 }
 
 button.gm-ui-hover-effect > span {
-  background-color: #888 !important;
+  background-color: #666 !important;
 }
 
-/* Google Maps zoom control dark theme */
+/* Google Maps zoom control light theme */
 .gm-bundled-control .gmnoprint div,
 .gm-bundled-control button {
-  background: rgba(13,13,13,0.92) !important;
-  border-color: #2a2a2a !important;
-  color: #f0f0f0 !important;
+  background: rgba(255,255,255,0.96) !important;
+  border-color: #e5e5e5 !important;
+  color: #1a1a1a !important;
 }
 
 /* Google Maps attribution */

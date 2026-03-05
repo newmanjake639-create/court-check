@@ -9,7 +9,7 @@ const COLORS = [
 ];
 
 const getUserColor = (name) => {
-  if (!name) return '#888';
+  if (!name) return '#999';
   let h = 0;
   for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
   return COLORS[Math.abs(h) % COLORS.length];
@@ -45,7 +45,7 @@ const MessageRow = ({ msg }) => {
 const msgS = {
   row: {
     padding: '7px 14px',
-    borderBottom: '1px solid rgba(255,255,255,0.03)',
+    borderBottom: '1px solid rgba(0,0,0,0.05)',
     transition: 'background 0.1s',
   },
   line1: {
@@ -63,9 +63,9 @@ const msgS = {
   },
   courtChip: {
     fontSize: '10px',
-    color: '#555',
-    background: '#1a1a1a',
-    border: '1px solid #252525',
+    color: '#888',
+    background: '#f5f5f5',
+    border: '1px solid #e5e5e5',
     borderRadius: '4px',
     padding: '1px 6px',
     lineHeight: 1.5,
@@ -73,13 +73,13 @@ const msgS = {
   },
   time: {
     fontSize: '10px',
-    color: '#333',
+    color: '#ccc',
     marginLeft: 'auto',
     flexShrink: 0,
   },
   text: {
     fontSize: '13px',
-    color: '#bbb',
+    color: '#444',
     lineHeight: 1.5,
     wordBreak: 'break-word',
     margin: 0,
@@ -102,7 +102,6 @@ const ChatPanel = ({ playerName, checkedInCourt, courts, isMobile }) => {
   const isOpenRef   = useRef(isOpen);
   isOpenRef.current = isOpen;
 
-  // Which court is active for Court Chat
   const activeCourtId = mode === 'court'
     ? (checkedInCourt?.id ?? courtPickId)
     : null;
@@ -175,7 +174,6 @@ const ChatPanel = ({ playerName, checkedInCourt, courts, isMobile }) => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // ── Open / close ──────────────────────────────────────────────────────────
   const open = () => {
     setIsOpen(true);
     setUnread(0);
@@ -184,7 +182,6 @@ const ChatPanel = ({ playerName, checkedInCourt, courts, isMobile }) => {
 
   const close = () => setIsOpen(false);
 
-  // ── Send ──────────────────────────────────────────────────────────────────
   const send = async () => {
     const text = input.trim();
     if (!text || !playerName) return;
@@ -204,7 +201,6 @@ const ChatPanel = ({ playerName, checkedInCourt, courts, isMobile }) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
   };
 
-  // ── Positioning ───────────────────────────────────────────────────────────
   const btnBottom  = isMobile ? '74px' : '50px';
   const panelTop   = isMobile ? '50px' : '57px';
   const panelBot   = isMobile ? '60px' : '33px';
@@ -347,7 +343,7 @@ const S = {
     justifyContent: 'center',
     cursor: 'pointer',
     zIndex: 450,
-    boxShadow: '0 4px 20px rgba(255,107,26,0.45)',
+    boxShadow: '0 4px 20px rgba(255,107,26,0.35)',
     transition: 'transform 0.15s, box-shadow 0.15s',
     fontFamily: 'inherit',
   },
@@ -359,7 +355,7 @@ const S = {
     height: '18px',
     borderRadius: '9px',
     background: '#ef4444',
-    border: '2px solid #0d0d0d',
+    border: '2px solid #ffffff',
     color: '#fff',
     fontSize: '9px',
     fontWeight: '900',
@@ -372,22 +368,22 @@ const S = {
   panel: {
     position: 'fixed',
     right: 0,
-    background: '#0c0c0c',
-    borderLeft: '1px solid #1e1e1e',
+    background: '#ffffff',
+    borderLeft: '1px solid #e5e5e5',
     display: 'flex',
     flexDirection: 'column',
     zIndex: 300,
     animation: 'slideInRight 0.22s ease',
-    boxShadow: '-8px 0 40px rgba(0,0,0,0.6)',
+    boxShadow: '-4px 0 24px rgba(0,0,0,0.10)',
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
     padding: '10px 12px',
-    borderBottom: '1px solid #1a1a1a',
+    borderBottom: '1px solid #e5e5e5',
     flexShrink: 0,
-    background: '#0f0f0f',
+    background: '#fafafa',
   },
   headerLeft: {
     display: 'flex',
@@ -401,19 +397,19 @@ const S = {
     borderRadius: '50%',
     background: '#ef4444',
     flexShrink: 0,
-    boxShadow: '0 0 8px rgba(239,68,68,0.8)',
+    boxShadow: '0 0 8px rgba(239,68,68,0.6)',
     animation: 'pulse-ring 1.8s ease infinite',
   },
   headerTitle: {
     fontSize: '11px',
     fontWeight: '900',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     letterSpacing: '0.1em',
   },
   toggle: {
     flex: 1,
     display: 'flex',
-    background: '#1a1a1a',
+    background: '#f0f0f0',
     borderRadius: '8px',
     padding: '2px',
     gap: '2px',
@@ -424,7 +420,7 @@ const S = {
     borderRadius: '6px',
     border: 'none',
     background: 'transparent',
-    color: '#444',
+    color: '#999',
     fontSize: '11px',
     fontWeight: '700',
     cursor: 'pointer',
@@ -439,7 +435,7 @@ const S = {
   closeBtn: {
     background: 'transparent',
     border: 'none',
-    color: '#444',
+    color: '#bbb',
     fontSize: '14px',
     cursor: 'pointer',
     fontFamily: 'inherit',
@@ -451,7 +447,7 @@ const S = {
     alignItems: 'center',
     gap: '6px',
     padding: '7px 12px',
-    borderBottom: '1px solid #151515',
+    borderBottom: '1px solid #f0f0f0',
     flexShrink: 0,
     background: 'rgba(255,107,26,0.04)',
   },
@@ -469,8 +465,8 @@ const S = {
     fontSize: '9px',
     fontWeight: '800',
     color: '#ff6b1a',
-    background: 'rgba(255,107,26,0.15)',
-    border: '1px solid rgba(255,107,26,0.25)',
+    background: 'rgba(255,107,26,0.12)',
+    border: '1px solid rgba(255,107,26,0.2)',
     borderRadius: '4px',
     padding: '2px 6px',
     letterSpacing: '0.08em',
@@ -478,11 +474,11 @@ const S = {
   },
   courtSelect: {
     flex: 1,
-    background: '#1a1a1a',
-    border: '1px solid #2a2a2a',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '8px',
     padding: '7px 10px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '12px',
     fontFamily: 'inherit',
     outline: 'none',
@@ -497,7 +493,8 @@ const S = {
     paddingTop: '4px',
     paddingBottom: '4px',
     scrollbarWidth: 'thin',
-    scrollbarColor: '#222 transparent',
+    scrollbarColor: '#e5e5e5 transparent',
+    background: '#ffffff',
   },
   empty: {
     flex: 1,
@@ -511,12 +508,12 @@ const S = {
   emptyTitle: {
     fontSize: '14px',
     fontWeight: '700',
-    color: '#333',
+    color: '#999',
     marginBottom: '6px',
   },
   emptySub: {
     fontSize: '12px',
-    color: '#252525',
+    color: '#bbb',
     lineHeight: 1.5,
   },
   jumpBtn: {
@@ -524,7 +521,7 @@ const S = {
     padding: '7px',
     borderRadius: '8px',
     border: 'none',
-    background: 'rgba(255,107,26,0.15)',
+    background: 'rgba(255,107,26,0.12)',
     color: '#ff6b1a',
     fontSize: '11px',
     fontWeight: '700',
@@ -537,17 +534,17 @@ const S = {
     display: 'flex',
     gap: '7px',
     padding: '9px 10px',
-    borderTop: '1px solid #1a1a1a',
+    borderTop: '1px solid #e5e5e5',
     flexShrink: 0,
-    background: '#0f0f0f',
+    background: '#fafafa',
   },
   input: {
     flex: 1,
-    background: '#1a1a1a',
-    border: '1px solid #252525',
+    background: '#ffffff',
+    border: '1px solid #e5e5e5',
     borderRadius: '10px',
     padding: '9px 11px',
-    color: '#f0f0f0',
+    color: '#1a1a1a',
     fontSize: '13px',
     fontFamily: 'inherit',
     outline: 'none',
@@ -555,7 +552,7 @@ const S = {
     minWidth: 0,
   },
   inputOff: {
-    opacity: 0.35,
+    opacity: 0.4,
     cursor: 'not-allowed',
   },
   sendBtn: {
