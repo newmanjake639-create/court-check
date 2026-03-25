@@ -15,6 +15,7 @@ import LegalModal from './components/LegalModal';
 import ChatPanel from './components/ChatPanel';
 import SportsTicker from './components/SportsTicker';
 import PlanToGoModal from './components/PlanToGoModal';
+import MapCourtSheet from './components/MapCourtSheet';
 import './App.css';
 
 const App = () => {
@@ -217,31 +218,15 @@ const App = () => {
 
       <main style={styles.main}>
         {activeTab === 'map' && (
-          <div style={styles.splitLayout}>
-            <div style={styles.mapContainer}>
-              <CourtMap
-                courts={courts}
-                onCourtSelect={setSelectedCourt}
-                selectedCourt={selectedCourt}
-                checkedInCourt={checkedInCourt}
-                isMobile={isMobile}
-                plannedVisitsCourtIds={plannedVisitsCourtIds}
-              />
-            </div>
-            {!isMobile && selectedCourt && (
-              <div style={styles.sidebar}>
-                <CourtDetailPanel
-                  court={detailCourt}
-                  onClose={() => setSelectedCourt(null)}
-                  checkedInCourt={checkedInCourt}
-                  setCheckedInCourt={handleSetCheckedInCourt}
-                  plannedVisits={plannedVisits.filter(p => p.court_id === detailCourt?.id)}
-                  myPlanCourtId={myPlanCourtId}
-                  onPlanToGo={setPlanModal}
-                  onCancelPlan={handleCancelPlan}
-                />
-              </div>
-            )}
+          <div style={styles.mapContainer}>
+            <CourtMap
+              courts={courts}
+              onCourtSelect={setSelectedCourt}
+              selectedCourt={selectedCourt}
+              checkedInCourt={checkedInCourt}
+              isMobile={isMobile}
+              plannedVisitsCourtIds={plannedVisitsCourtIds}
+            />
           </div>
         )}
 
@@ -351,8 +336,23 @@ const App = () => {
         </div>
       )}
 
-      {/* Mobile bottom sheet for court detail */}
-      {isMobile && selectedCourt && (
+      {/* Map pin sheet — all devices, map tab only */}
+      {activeTab === 'map' && selectedCourt && (
+        <MapCourtSheet
+          court={detailCourt}
+          plannedVisits={plannedVisits}
+          checkedInCourt={checkedInCourt}
+          myPlanCourtId={myPlanCourtId}
+          onCheckIn={handleSetCheckedInCourt}
+          onCheckOut={() => handleSetCheckedInCourt(null)}
+          onPlanToGo={setPlanModal}
+          onCancelPlan={handleCancelPlan}
+          onClose={() => setSelectedCourt(null)}
+        />
+      )}
+
+      {/* Courts-tab bottom sheet — mobile only */}
+      {isMobile && activeTab !== 'map' && selectedCourt && (
         <MobileBottomSheet
           court={detailCourt}
           onClose={() => setSelectedCourt(null)}
@@ -757,7 +757,7 @@ const styles = {
   main: { flex: 1, overflow: 'hidden', position: 'relative' },
   full: { height: '100%' },
   splitLayout: { display: 'flex', height: '100%' },
-  mapContainer: { flex: 1, position: 'relative', minWidth: 0 },
+  mapContainer: { height: '100%', position: 'relative', minWidth: 0 },
   listContainer: { flex: 1, minWidth: 0, overflow: 'hidden' },
   sidebar: { width: '340px', flexShrink: 0, borderLeft: '1px solid #e5e5e5', background: '#ffffff', overflowY: 'auto' },
   fullPanel: { height: '100%', overflow: 'hidden' },
