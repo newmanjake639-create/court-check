@@ -177,6 +177,14 @@ export const COURTS = [
   },
 ];
 
+export const formatArrivalTime = (isoString) => {
+  const date = new Date(isoString);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+  const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  return isToday ? timeStr : `Tomorrow ${timeStr}`;
+};
+
 export const getCourtStatus = (court) => {
   const ratio = court.checkedIn / court.maxPlayers;
   if (ratio === 0) return { label: "Empty", color: "#555", bg: "rgba(85,85,85,0.15)" };

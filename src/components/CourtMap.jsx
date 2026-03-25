@@ -14,7 +14,7 @@ const LIGHT_MAP_STYLES = [
   { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f8f8f5' }] },
 ];
 
-const createMarkerSvg = (court, isSelected) => {
+const createMarkerSvg = (court, isSelected, hasPlanned = false) => {
   const status = getCourtStatus(court);
   const isIndoor = court.indoor;
 
@@ -50,6 +50,8 @@ const createMarkerSvg = (court, isSelected) => {
     ${ballContent}
     ${court.needPlayers ? `<circle cx="29" cy="7" r="6" fill="#ff6b1a" stroke="#ffffff" stroke-width="1.5"/>
     <text x="29" y="11" text-anchor="middle" font-size="9" font-family="Arial,sans-serif" fill="white" font-weight="bold">!</text>` : ''}
+    ${hasPlanned && !court.needPlayers ? `<circle cx="29" cy="7" r="6" fill="#8b5cf6" stroke="#ffffff" stroke-width="1.5"/>
+    <text x="29" y="11.5" text-anchor="middle" font-size="10" font-family="Arial,sans-serif" fill="white">↑</text>` : ''}
   </svg>`;
   return { svg, size, anchorH };
 };
@@ -124,7 +126,7 @@ const iw = {
   detailBtn: { padding: '8px', borderRadius: '8px', border: 'none', background: '#ff6b1a', color: '#fff', fontSize: '11px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit' },
 };
 
-const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobile }) => {
+const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobile, plannedVisitsCourtIds = new Set() }) => {
   const [mapType, setMapType] = useState('roadmap');
   const [activeInfoId, setActiveInfoId] = useState(null);
   const [locating, setLocating] = useState(false);
@@ -180,7 +182,8 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
 
   const getMarkerIcon = (court) => {
     const isSelected = selectedCourt?.id === court.id;
-    const { svg, size, anchorH } = createMarkerSvg(court, isSelected);
+    const hasPlanned = plannedVisitsCourtIds.has(court.id);
+    const { svg, size, anchorH } = createMarkerSvg(court, isSelected, hasPlanned);
     return {
       url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
       scaledSize: new window.google.maps.Size(size, anchorH),
@@ -340,6 +343,15 @@ const CourtMap = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, isMobi
             <line x1="9" y1="18" x2="27" y2="18" stroke="#006E88" strokeWidth="1.4" strokeLinecap="round"/>
           </svg>
           <span style={{ ...styles.legendLabel, color: '#00D4FF' }}>Indoor</span>
+        </div>
+        <div style={styles.legendItem}>
+          <svg width="13" height="16" viewBox="0 0 36 44" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 0C8.06 0 0 8.06 0 18C0 31.5 18 44 18 44C18 44 36 31.5 36 18C36 8.06 27.94 0 18 0Z"
+              fill="#141414" stroke="#555" strokeWidth="2"/>
+            <circle cx="29" cy="7" r="6" fill="#8b5cf6" stroke="#ffffff" strokeWidth="1.5"/>
+            <text x="29" y="11.5" textAnchor="middle" fontSize="10" fontFamily="Arial,sans-serif" fill="white">↑</text>
+          </svg>
+          <span style={{ ...styles.legendLabel, color: '#8b5cf6' }}>Planned</span>
         </div>
       </div>
     </div>

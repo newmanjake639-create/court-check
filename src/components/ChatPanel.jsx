@@ -449,7 +449,6 @@ const S = {
     borderBottom: '1px solid #ffe8d6',
     flexShrink: 0,
     border: 'none',
-    borderBottom: '1px solid #ffe8d6',
     width: '100%',
     cursor: 'pointer',
     fontFamily: 'inherit',

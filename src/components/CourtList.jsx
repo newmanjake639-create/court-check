@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCourtStatus } from '../data/courts';
+import { getCourtStatus, formatArrivalTime } from '../data/courts';
 
 const haversineMi = (lat1, lng1, lat2, lng2) => {
   const R = 3959;
@@ -10,9 +10,10 @@ const haversineMi = (lat1, lng1, lat2, lng2) => {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
 
-const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc }) => {
+const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc, courtPlannedVisits = [], myPlanCourtId, onPlanToGo, onCancelPlan, onCheckIn, onCheckOut }) => {
   const status = getCourtStatus(court);
   const isCheckedIn = checkedInCourt === court.id;
+  const isPlanning = myPlanCourtId === court.id;
   const fillPercent = Math.round((court.checkedIn / court.maxPlayers) * 100);
   const distance = userLoc
     ? haversineMi(userLoc.lat, userLoc.lng, court.lat, court.lng)
@@ -68,10 +69,10 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc }) => 
         </div>
       </div>
 
-      {/* Player bar */}
+      {/* Here Now bar */}
       <div style={styles.barSection}>
         <div style={styles.barHeader}>
-          <span style={styles.barLabel}>Players</span>
+          <span style={styles.barLabel}>✅ Here Now</span>
           <span style={styles.barCount}>
             <span style={{ color: '#1a1a1a', fontWeight: '600' }}>{court.checkedIn}</span>
             <span style={{ color: '#ccc' }}>/{court.maxPlayers}</span>
@@ -85,6 +86,24 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc }) => 
           }} />
         </div>
       </div>
+
+      {/* Heading There */}
+      {courtPlannedVisits.length > 0 && (
+        <div style={styles.headingSection}>
+          <div style={styles.headingTitle}>🗓️ Heading There ({courtPlannedVisits.length})</div>
+          {courtPlannedVisits.slice(0, 3).map(pv => (
+            <div key={pv.id} style={styles.pvRow}>
+              <span style={styles.pvName}>{pv.player_name}</span>
+              {pv.game_type && <span style={styles.pvGameType}>{pv.game_type}</span>}
+              <span style={styles.pvTime}>{formatArrivalTime(pv.arrival_time)}</span>
+              {pv.message && <span style={styles.pvMsg}>· "{pv.message}"</span>}
+            </div>
+          ))}
+          {courtPlannedVisits.length > 3 && (
+            <div style={styles.pvMore}>+{courtPlannedVisits.length - 3} more</div>
+          )}
+        </div>
+      )}
 
       <div style={styles.cardMeta}>
         <div style={styles.metaItem}>
@@ -111,11 +130,37 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc }) => 
           <span style={styles.needAlertText}>{court.needPlayersMessage}</span>
         </div>
       )}
+
+      {/* Action buttons */}
+      <div style={styles.cardActions} onClick={e => e.stopPropagation()}>
+        {isCheckedIn ? (
+          <button style={styles.checkoutBtn} onClick={() => onCheckOut?.()}>
+            Check Out
+          </button>
+        ) : (
+          <button
+            style={{ ...styles.checkInBtn, ...(checkedInCourt && !isCheckedIn ? styles.checkInBtnDisabled : {}) }}
+            disabled={!!checkedInCourt && !isCheckedIn}
+            onClick={() => onCheckIn?.(court.id)}
+          >
+            ✅ Check In
+          </button>
+        )}
+        {isPlanning ? (
+          <button style={styles.cancelPlanBtn} onClick={() => onCancelPlan?.()}>
+            😕 Changed Mind
+          </button>
+        ) : (
+          <button style={styles.planBtn} onClick={() => onPlanToGo?.(court)}>
+            🗓️ Planning to Go
+          </button>
+        )}
+      </div>
     </div>
   );
 };
 
-const CourtList = ({ courts, onCourtSelect, selectedCourt, checkedInCourt }) => {
+const CourtList = ({ courts, onCourtSelect, selectedCourt, checkedInCourt, plannedVisits = [], myPlanCourtId, onPlanToGo, onCancelPlan, onCheckIn, onCheckOut }) => {
   const [filter, setFilter] = useState('all');
   const [sort, setSort] = useState('nearest');
   const [userLoc, setUserLoc] = useState(null);
@@ -206,6 +251,12 @@ const CourtList = ({ courts, onCourtSelect, selectedCourt, checkedInCourt }) => 
               onSelect={onCourtSelect}
               checkedInCourt={checkedInCourt}
               userLoc={userLoc}
+              courtPlannedVisits={plannedVisits.filter(p => p.court_id === court.id)}
+              myPlanCourtId={myPlanCourtId}
+              onPlanToGo={onPlanToGo}
+              onCancelPlan={onCancelPlan}
+              onCheckIn={onCheckIn}
+              onCheckOut={onCheckOut}
             />
           ))
         )}
@@ -432,6 +483,118 @@ const styles = {
     color: '#999',
     whiteSpace: 'nowrap',
     marginLeft: 'auto',
+  },
+  headingSection: {
+    background: 'rgba(139,92,246,0.05)',
+    border: '1px solid rgba(139,92,246,0.15)',
+    borderRadius: '8px',
+    padding: '8px 10px',
+    marginBottom: '8px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '5px',
+  },
+  headingTitle: {
+    fontSize: '10px',
+    fontWeight: '800',
+    color: '#8b5cf6',
+    textTransform: 'uppercase',
+    letterSpacing: '0.07em',
+    marginBottom: '2px',
+  },
+  pvRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '5px',
+    flexWrap: 'wrap',
+  },
+  pvName: {
+    fontSize: '12px',
+    fontWeight: '700',
+    color: '#1a1a1a',
+  },
+  pvGameType: {
+    fontSize: '10px',
+    fontWeight: '700',
+    color: '#8b5cf6',
+    background: 'rgba(139,92,246,0.1)',
+    border: '1px solid rgba(139,92,246,0.2)',
+    borderRadius: '4px',
+    padding: '1px 5px',
+  },
+  pvTime: {
+    fontSize: '11px',
+    color: '#ff6b1a',
+    fontWeight: '600',
+    marginLeft: 'auto',
+    flexShrink: 0,
+  },
+  pvMsg: {
+    fontSize: '11px',
+    color: '#999',
+    fontStyle: 'italic',
+    width: '100%',
+    lineHeight: 1.3,
+  },
+  pvMore: {
+    fontSize: '11px',
+    color: '#8b5cf6',
+    fontWeight: '600',
+  },
+  cardActions: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '7px',
+    marginTop: '10px',
+  },
+  checkInBtn: {
+    padding: '9px',
+    borderRadius: '8px',
+    border: 'none',
+    background: '#ff6b1a',
+    color: '#fff',
+    fontSize: '12px',
+    fontWeight: '700',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  checkInBtnDisabled: {
+    opacity: 0.35,
+    cursor: 'not-allowed',
+    background: '#ccc',
+  },
+  checkoutBtn: {
+    padding: '9px',
+    borderRadius: '8px',
+    border: '1px solid rgba(239,68,68,0.25)',
+    background: 'rgba(239,68,68,0.06)',
+    color: '#ef4444',
+    fontSize: '12px',
+    fontWeight: '700',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  planBtn: {
+    padding: '9px',
+    borderRadius: '8px',
+    border: '1px solid rgba(139,92,246,0.25)',
+    background: 'rgba(139,92,246,0.06)',
+    color: '#8b5cf6',
+    fontSize: '12px',
+    fontWeight: '700',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+  },
+  cancelPlanBtn: {
+    padding: '9px',
+    borderRadius: '8px',
+    border: '1px solid #e5e5e5',
+    background: '#f5f5f5',
+    color: '#999',
+    fontSize: '12px',
+    fontWeight: '600',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
   },
   needAlert: {
     display: 'flex',

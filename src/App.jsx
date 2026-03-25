@@ -7,12 +7,14 @@ import NeedPlayers from './components/NeedPlayers';
 import Stats from './components/Stats';
 import Profile from './components/Profile';
 import Welcome from './components/Welcome';
-import { COURTS } from './data/courts';
+import { COURTS, formatArrivalTime } from './data/courts';
 import { useIsMobile } from './hooks/useIsMobile';
+import { usePlannedVisits } from './hooks/usePlannedVisits';
 import { supabase } from './lib/supabase';
 import LegalModal from './components/LegalModal';
 import ChatPanel from './components/ChatPanel';
 import SportsTicker from './components/SportsTicker';
+import PlanToGoModal from './components/PlanToGoModal';
 import './App.css';
 
 const App = () => {
@@ -42,6 +44,15 @@ const App = () => {
   const [checkInRecordId, setCheckInRecordId] = useState(() =>
     localStorage.getItem('cc_checkInRecordId')
   );
+
+  // ── Planning to Go ────────────────────────────────────────────────────────
+  const { plannedVisits } = usePlannedVisits();
+  const [myPlanId, setMyPlanId] = useState(() => localStorage.getItem('cc_myPlanId'));
+  const [myPlanCourtId, setMyPlanCourtId] = useState(() => {
+    const s = localStorage.getItem('cc_myPlanCourtId');
+    return s ? parseInt(s, 10) : null;
+  });
+  const [planModal, setPlanModal] = useState(null); // court object or null
 
   // Load live check-in counts from Supabase and subscribe to real-time changes
   useEffect(() => {
@@ -139,7 +150,46 @@ const App = () => {
     localStorage.setItem('cc_playerName', name || '');
   };
 
+  const handlePlanToGo = async ({ court, arrivalTime, duration, gameType, message }) => {
+    const name = playerName || 'Anonymous';
+    // Cancel any existing plan first
+    if (myPlanId) {
+      await supabase.from('planned_visits').update({ is_active: false }).eq('id', myPlanId);
+    }
+    const { data } = await supabase
+      .from('planned_visits')
+      .insert({ court_id: court.id, court_name: court.name, player_name: name, arrival_time: arrivalTime, duration, game_type: gameType, message: message || null })
+      .select('id')
+      .single();
+    if (data) {
+      setMyPlanId(data.id);
+      setMyPlanCourtId(court.id);
+      localStorage.setItem('cc_myPlanId', data.id);
+      localStorage.setItem('cc_myPlanCourtId', court.id);
+    }
+    // Auto-post to global chat
+    const timeStr = formatArrivalTime(arrivalTime);
+    await supabase.from('chat_messages').insert({
+      player_name: name,
+      message: `is planning to head to ${court.name} at ${timeStr}${message ? ` — "${message}"` : ''}`,
+      chat_type: 'global',
+      court_id: null,
+      court_name: court.name,
+    });
+    setPlanModal(null);
+  };
+
+  const handleCancelPlan = async () => {
+    if (!myPlanId) return;
+    await supabase.from('planned_visits').update({ is_active: false }).eq('id', myPlanId);
+    setMyPlanId(null);
+    setMyPlanCourtId(null);
+    localStorage.removeItem('cc_myPlanId');
+    localStorage.removeItem('cc_myPlanCourtId');
+  };
+
   const checkedInCourtData = courts.find(c => c.id === checkedInCourt) || null;
+  const plannedVisitsCourtIds = new Set(plannedVisits.map(p => p.court_id));
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -175,6 +225,7 @@ const App = () => {
                 selectedCourt={selectedCourt}
                 checkedInCourt={checkedInCourt}
                 isMobile={isMobile}
+                plannedVisitsCourtIds={plannedVisitsCourtIds}
               />
             </div>
             {!isMobile && selectedCourt && (
@@ -184,6 +235,10 @@ const App = () => {
                   onClose={() => setSelectedCourt(null)}
                   checkedInCourt={checkedInCourt}
                   setCheckedInCourt={handleSetCheckedInCourt}
+                  plannedVisits={plannedVisits.filter(p => p.court_id === detailCourt?.id)}
+                  myPlanCourtId={myPlanCourtId}
+                  onPlanToGo={setPlanModal}
+                  onCancelPlan={handleCancelPlan}
                 />
               </div>
             )}
@@ -198,6 +253,12 @@ const App = () => {
                 onCourtSelect={setSelectedCourt}
                 selectedCourt={selectedCourt}
                 checkedInCourt={checkedInCourt}
+                plannedVisits={plannedVisits}
+                myPlanCourtId={myPlanCourtId}
+                onPlanToGo={setPlanModal}
+                onCancelPlan={handleCancelPlan}
+                onCheckIn={handleSetCheckedInCourt}
+                onCheckOut={() => handleSetCheckedInCourt(null)}
               />
             </div>
           ) : (
@@ -208,6 +269,12 @@ const App = () => {
                   onCourtSelect={setSelectedCourt}
                   selectedCourt={selectedCourt}
                   checkedInCourt={checkedInCourt}
+                  plannedVisits={plannedVisits}
+                  myPlanCourtId={myPlanCourtId}
+                  onPlanToGo={setPlanModal}
+                  onCancelPlan={handleCancelPlan}
+                  onCheckIn={handleSetCheckedInCourt}
+                  onCheckOut={() => handleSetCheckedInCourt(null)}
                 />
               </div>
               {selectedCourt && (
@@ -217,6 +284,10 @@ const App = () => {
                     onClose={() => setSelectedCourt(null)}
                     checkedInCourt={checkedInCourt}
                     setCheckedInCourt={handleSetCheckedInCourt}
+                    plannedVisits={plannedVisits.filter(p => p.court_id === detailCourt?.id)}
+                    myPlanCourtId={myPlanCourtId}
+                    onPlanToGo={setPlanModal}
+                    onCancelPlan={handleCancelPlan}
                   />
                 </div>
               )}
@@ -287,6 +358,20 @@ const App = () => {
           onClose={() => setSelectedCourt(null)}
           checkedInCourt={checkedInCourt}
           setCheckedInCourt={handleSetCheckedInCourt}
+          plannedVisits={plannedVisits.filter(p => p.court_id === detailCourt?.id)}
+          myPlanCourtId={myPlanCourtId}
+          onPlanToGo={setPlanModal}
+          onCancelPlan={handleCancelPlan}
+        />
+      )}
+
+      {/* Plan to Go modal */}
+      {planModal && (
+        <PlanToGoModal
+          court={planModal}
+          playerName={playerName}
+          onSubmit={handlePlanToGo}
+          onClose={() => setPlanModal(null)}
         />
       )}
 
@@ -385,7 +470,7 @@ const tabBarStyles = {
 };
 
 // Mobile bottom sheet
-const MobileBottomSheet = ({ court, onClose, checkedInCourt, setCheckedInCourt }) => (
+const MobileBottomSheet = ({ court, onClose, checkedInCourt, setCheckedInCourt, plannedVisits, myPlanCourtId, onPlanToGo, onCancelPlan }) => (
   <div style={sheetStyles.backdrop} onClick={onClose}>
     <div style={sheetStyles.sheet} onClick={e => e.stopPropagation()}>
       <div style={sheetStyles.handle} />
@@ -394,6 +479,10 @@ const MobileBottomSheet = ({ court, onClose, checkedInCourt, setCheckedInCourt }
         onClose={onClose}
         checkedInCourt={checkedInCourt}
         setCheckedInCourt={setCheckedInCourt}
+        plannedVisits={plannedVisits}
+        myPlanCourtId={myPlanCourtId}
+        onPlanToGo={onPlanToGo}
+        onCancelPlan={onCancelPlan}
       />
     </div>
   </div>
@@ -434,8 +523,9 @@ const sheetStyles = {
 };
 
 // Court detail panel (shared desktop sidebar + mobile sheet)
-const CourtDetailPanel = ({ court, onClose, checkedInCourt, setCheckedInCourt }) => {
+const CourtDetailPanel = ({ court, onClose, checkedInCourt, setCheckedInCourt, plannedVisits = [], myPlanCourtId, onPlanToGo, onCancelPlan }) => {
   const isCheckedIn = checkedInCourt === court.id;
+  const isPlanning = myPlanCourtId === court.id;
   const fillPercent = Math.round((court.checkedIn / court.maxPlayers) * 100);
   const statusColor = fillPercent >= 75 ? '#ef4444' : fillPercent >= 40 ? '#eab308' : fillPercent > 0 ? '#22c55e' : '#555';
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(court.name + ' ' + court.address)}`;
@@ -468,6 +558,7 @@ const CourtDetailPanel = ({ court, onClose, checkedInCourt, setCheckedInCourt })
       </div>
 
       <div style={panelStyles.activityCard}>
+        <div style={panelStyles.activitySectionTitle}>✅ Here Now</div>
         <div style={panelStyles.activityRow}>
           <div style={panelStyles.activityStat}>
             <div style={{ ...panelStyles.bigNum, color: statusColor }}>{court.checkedIn}</div>
@@ -491,6 +582,23 @@ const CourtDetailPanel = ({ court, onClose, checkedInCourt, setCheckedInCourt })
           {fillPercent}% full · {Math.max(0, court.maxPlayers - court.checkedIn)} spots remaining
         </div>
       </div>
+
+      {/* Heading There */}
+      {plannedVisits.length > 0 && (
+        <div style={panelStyles.headingThereCard}>
+          <div style={panelStyles.headingThereTitle}>🗓️ Heading There ({plannedVisits.length})</div>
+          {plannedVisits.map(pv => (
+            <div key={pv.id} style={panelStyles.pvRow}>
+              <div style={panelStyles.pvTop}>
+                <span style={panelStyles.pvName}>{pv.player_name}</span>
+                {pv.game_type && <span style={panelStyles.pvGameType}>{pv.game_type}</span>}
+                <span style={panelStyles.pvTime}>{formatArrivalTime(pv.arrival_time)}</span>
+              </div>
+              {pv.message && <div style={panelStyles.pvMsg}>"{pv.message}"</div>}
+            </div>
+          ))}
+        </div>
+      )}
 
       <div style={panelStyles.detailGrid}>
         <div style={panelStyles.detailItem}>
@@ -582,6 +690,18 @@ const CourtDetailPanel = ({ court, onClose, checkedInCourt, setCheckedInCourt })
             ✅ Check In Here
           </button>
         )}
+        {isPlanning ? (
+          <button onClick={onCancelPlan} style={panelStyles.cancelPlanBtn}>
+            😕 I Changed My Mind
+          </button>
+        ) : (
+          <button
+            onClick={() => onPlanToGo?.(court)}
+            style={panelStyles.planBtn}
+          >
+            🗓️ Planning to Go
+          </button>
+        )}
       </div>
     </div>
   );
@@ -619,6 +739,17 @@ const panelStyles = {
   checkInBtn: { width: '100%', padding: '13px', borderRadius: '12px', border: 'none', background: '#ff6b1a', color: '#fff', fontSize: '15px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s' },
   checkInBtnDisabled: { opacity: 0.35, cursor: 'not-allowed', background: '#ccc' },
   checkoutBtn: { width: '100%', padding: '13px', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.06)', color: '#ef4444', fontSize: '15px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s' },
+  planBtn: { width: '100%', padding: '13px', borderRadius: '12px', border: '1px solid rgba(139,92,246,0.25)', background: 'rgba(139,92,246,0.06)', color: '#8b5cf6', fontSize: '15px', fontWeight: '700', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s' },
+  cancelPlanBtn: { width: '100%', padding: '13px', borderRadius: '12px', border: '1px solid #e5e5e5', background: '#f5f5f5', color: '#999', fontSize: '14px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' },
+  activitySectionTitle: { fontSize: '11px', fontWeight: '800', color: '#999', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' },
+  headingThereCard: { background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.15)', borderRadius: '14px', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px' },
+  headingThereTitle: { fontSize: '11px', fontWeight: '800', color: '#8b5cf6', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' },
+  pvRow: { display: 'flex', flexDirection: 'column', gap: '3px' },
+  pvTop: { display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' },
+  pvName: { fontSize: '13px', fontWeight: '700', color: '#1a1a1a' },
+  pvGameType: { fontSize: '10px', fontWeight: '700', color: '#8b5cf6', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '4px', padding: '1px 6px' },
+  pvTime: { fontSize: '12px', color: '#ff6b1a', fontWeight: '600', marginLeft: 'auto' },
+  pvMsg: { fontSize: '12px', color: '#888', fontStyle: 'italic', lineHeight: 1.4, paddingLeft: '2px' },
 };
 
 const styles = {
