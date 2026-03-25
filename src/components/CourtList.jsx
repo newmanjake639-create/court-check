@@ -69,12 +69,13 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc, court
         </div>
       </div>
 
-      {/* Here Now bar */}
-      <div style={styles.barSection}>
-        <div style={styles.barHeader}>
-          <span style={styles.barLabel}>✅ Here Now</span>
-          <span style={styles.barCount}>
-            <span style={{ color: '#1a1a1a', fontWeight: '600' }}>{court.checkedIn}</span>
+      {/* ── Here Now ── */}
+      <div style={styles.sectionBlock}>
+        <div style={styles.sectionHeader}>
+          <span style={styles.sectionIcon}>✅</span>
+          <span style={styles.sectionLabel}>Here Now</span>
+          <span style={styles.sectionCount}>
+            <span style={{ color: '#1a1a1a', fontWeight: '700' }}>{court.checkedIn}</span>
             <span style={{ color: '#ccc' }}>/{court.maxPlayers}</span>
           </span>
         </div>
@@ -87,23 +88,54 @@ const CourtCard = ({ court, isSelected, onSelect, checkedInCourt, userLoc, court
         </div>
       </div>
 
-      {/* Heading There */}
-      {courtPlannedVisits.length > 0 && (
-        <div style={styles.headingSection}>
-          <div style={styles.headingTitle}>🗓️ Heading There ({courtPlannedVisits.length})</div>
-          {courtPlannedVisits.slice(0, 3).map(pv => (
-            <div key={pv.id} style={styles.pvRow}>
-              <span style={styles.pvName}>{pv.player_name}</span>
-              {pv.game_type && <span style={styles.pvGameType}>{pv.game_type}</span>}
-              <span style={styles.pvTime}>{formatArrivalTime(pv.arrival_time)}</span>
-              {pv.message && <span style={styles.pvMsg}>· "{pv.message}"</span>}
-            </div>
-          ))}
-          {courtPlannedVisits.length > 3 && (
-            <div style={styles.pvMore}>+{courtPlannedVisits.length - 3} more</div>
+      <div style={styles.sectionDivider} />
+
+      {/* ── Planning to Go ── */}
+      <div style={styles.sectionBlock}>
+        <div style={styles.sectionHeader}>
+          <span style={styles.sectionIcon}>🕐</span>
+          <span style={styles.sectionLabel}>Planning to Go</span>
+          {courtPlannedVisits.length > 0 && (
+            <span style={styles.planCount}>{courtPlannedVisits.length}</span>
           )}
         </div>
-      )}
+
+        {courtPlannedVisits.length === 0 ? (
+          <div style={styles.planEmpty}>
+            No one has planned a visit yet — be the first!
+          </div>
+        ) : (
+          <div style={styles.pvList}>
+            {courtPlannedVisits.slice(0, 3).map((pv, i) => (
+              <div key={pv.id} style={{ ...styles.pvCard, ...(i > 0 ? styles.pvCardBorder : {}) }}>
+                <span style={styles.pvCardName}>{pv.player_name}</span>
+                <div style={styles.pvCardMeta}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ff6b1a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span style={styles.pvCardTime}>{formatArrivalTime(pv.arrival_time)}</span>
+                  {pv.duration && (
+                    <span style={styles.pvBadge}>
+                      {pv.duration === 'all' ? 'All day' : `${pv.duration}h`}
+                    </span>
+                  )}
+                  {pv.game_type && (
+                    <span style={styles.pvBadge}>{pv.game_type}</span>
+                  )}
+                </div>
+                {pv.message && (
+                  <div style={styles.pvCardMsg}>"{pv.message}"</div>
+                )}
+              </div>
+            ))}
+            {courtPlannedVisits.length > 3 && (
+              <div style={styles.pvMore}>+{courtPlannedVisits.length - 3} more planning to go</div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div style={styles.sectionDivider} />
 
       <div style={styles.cardMeta}>
         <div style={styles.metaItem}>
@@ -411,23 +443,103 @@ const styles = {
     color: '#999',
     fontWeight: '600',
   },
-  barSection: {
-    marginBottom: '12px',
+  sectionBlock: {
+    marginBottom: '10px',
   },
-  barHeader: {
+  sectionHeader: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '5px',
+    gap: '5px',
+    marginBottom: '7px',
   },
-  barLabel: {
-    fontSize: '11px',
-    color: '#999',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-  },
-  barCount: {
+  sectionIcon: {
     fontSize: '12px',
+    lineHeight: 1,
+  },
+  sectionLabel: {
+    fontSize: '11px',
+    fontWeight: '700',
+    color: '#888',
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+    flex: 1,
+  },
+  sectionCount: {
+    fontSize: '12px',
+  },
+  sectionDivider: {
+    height: '1px',
+    background: '#f0f0f0',
+    margin: '10px 0',
+  },
+  planCount: {
+    fontSize: '11px',
+    fontWeight: '700',
+    color: '#ff6b1a',
+    background: 'rgba(255,107,26,0.08)',
+    border: '1px solid rgba(255,107,26,0.18)',
+    borderRadius: '10px',
+    padding: '1px 7px',
+  },
+  planEmpty: {
+    fontSize: '12px',
+    color: '#bbb',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    padding: '8px 0 4px',
+    lineHeight: 1.4,
+  },
+  pvList: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  pvCard: {
+    padding: '7px 0',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+  pvCardBorder: {
+    borderTop: '1px solid #f5f5f5',
+  },
+  pvCardName: {
+    fontSize: '13px',
+    fontWeight: '700',
+    color: '#ff6b1a',
+    lineHeight: 1.2,
+  },
+  pvCardMeta: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '5px',
+    flexWrap: 'wrap',
+  },
+  pvCardTime: {
+    fontSize: '12px',
+    color: '#ff6b1a',
+    fontWeight: '600',
+  },
+  pvBadge: {
+    fontSize: '10px',
+    fontWeight: '600',
+    color: '#888',
+    background: '#f5f5f5',
+    border: '1px solid #e5e5e5',
+    borderRadius: '4px',
+    padding: '1px 6px',
+    whiteSpace: 'nowrap',
+  },
+  pvCardMsg: {
+    fontSize: '12px',
+    color: '#aaa',
+    fontStyle: 'italic',
+    lineHeight: 1.4,
+  },
+  pvMore: {
+    fontSize: '11px',
+    color: '#ff6b1a',
+    fontWeight: '600',
+    paddingTop: '5px',
   },
   barTrack: {
     height: '4px',
@@ -483,63 +595,6 @@ const styles = {
     color: '#999',
     whiteSpace: 'nowrap',
     marginLeft: 'auto',
-  },
-  headingSection: {
-    background: 'rgba(139,92,246,0.05)',
-    border: '1px solid rgba(139,92,246,0.15)',
-    borderRadius: '8px',
-    padding: '8px 10px',
-    marginBottom: '8px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-  },
-  headingTitle: {
-    fontSize: '10px',
-    fontWeight: '800',
-    color: '#8b5cf6',
-    textTransform: 'uppercase',
-    letterSpacing: '0.07em',
-    marginBottom: '2px',
-  },
-  pvRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '5px',
-    flexWrap: 'wrap',
-  },
-  pvName: {
-    fontSize: '12px',
-    fontWeight: '700',
-    color: '#1a1a1a',
-  },
-  pvGameType: {
-    fontSize: '10px',
-    fontWeight: '700',
-    color: '#8b5cf6',
-    background: 'rgba(139,92,246,0.1)',
-    border: '1px solid rgba(139,92,246,0.2)',
-    borderRadius: '4px',
-    padding: '1px 5px',
-  },
-  pvTime: {
-    fontSize: '11px',
-    color: '#ff6b1a',
-    fontWeight: '600',
-    marginLeft: 'auto',
-    flexShrink: 0,
-  },
-  pvMsg: {
-    fontSize: '11px',
-    color: '#999',
-    fontStyle: 'italic',
-    width: '100%',
-    lineHeight: 1.3,
-  },
-  pvMore: {
-    fontSize: '11px',
-    color: '#8b5cf6',
-    fontWeight: '600',
   },
   cardActions: {
     display: 'grid',
